@@ -684,12 +684,12 @@ namespace VulTerGen
 		};
 
 
-		VkPipelineRasterizationStateCreateInfo pipelineRasterizerStateCreateInfo = {
-			pipelineRasterizerStateCreateInfo.sType = ,
-			pipelineRasterizerStateCreateInfo.pNext = ,
-			pipelineRasterizerStateCreateInfo.flags = ,
-			pipelineRasterizerStateCreateInfo.
-		};
+		//VkPipelineRasterizationStateCreateInfo pipelineRasterizerStateCreateInfo = {
+		//	pipelineRasterizerStateCreateInfo.sType = ,
+		//	pipelineRasterizerStateCreateInfo.pNext = ,
+		//	pipelineRasterizerStateCreateInfo.flags = ,
+		//	pipelineRasterizerStateCreateInfo.
+		//};
 	}
 
 	

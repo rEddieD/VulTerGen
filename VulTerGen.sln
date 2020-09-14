@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application", "Application\Application.vcxproj", "{8166B082-A361-4C41-B8A4-D365B411CC2D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TerrainGenerator", "TerrainGenerator\TerrainGenerator.vcxproj", "{29E26E13-F2AD-430A-A3FE-F29F6C64ED23}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanVisual", "VulkanVisual\VulkanVisual.vcxproj", "{A666F98F-09B9-432B-B686-614CBFE44ACF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29E26E13-F2AD-430A-A3FE-F29F6C64ED23}.Debug|x64.ActiveCfg = Debug|x64
+		{29E26E13-F2AD-430A-A3FE-F29F6C64ED23}.Debug|x64.Build.0 = Debug|x64
+		{29E26E13-F2AD-430A-A3FE-F29F6C64ED23}.Release|x64.ActiveCfg = Release|x64
+		{29E26E13-F2AD-430A-A3FE-F29F6C64ED23}.Release|x64.Build.0 = Release|x64
+		{A666F98F-09B9-432B-B686-614CBFE44ACF}.Debug|x64.ActiveCfg = Debug|x64
+		{A666F98F-09B9-432B-B686-614CBFE44ACF}.Debug|x64.Build.0 = Debug|x64
+		{A666F98F-09B9-432B-B686-614CBFE44ACF}.Release|x64.ActiveCfg = Release|x64
+		{A666F98F-09B9-432B-B686-614CBFE44ACF}.Release|x64.Build.0 = Release|x64
+		{8166B082-A361-4C41-B8A4-D365B411CC2D}.Debug|x64.ActiveCfg = Debug|x64
+		{8166B082-A361-4C41-B8A4-D365B411CC2D}.Debug|x64.Build.0 = Debug|x64
+		{8166B082-A361-4C41-B8A4-D365B411CC2D}.Release|x64.ActiveCfg = Release|x64
+		{8166B082-A361-4C41-B8A4-D365B411CC2D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE82A444-E7FA-4FB3-826C-A50CB9172DF1}
+	EndGlobalSection
+EndGlobal
