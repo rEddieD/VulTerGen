@@ -558,6 +558,7 @@ namespace VulTerGen
 
 	void CreatePipeline()
 	{
+		//Recreate pipeline if changing shaders
 		float positions[] = { -0.5f, -0.5f,  0.5f,
 							   0.5f, -0.5f,  0.5f,
 							   0.5f,  0.5f,  0.5f,
