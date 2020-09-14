@@ -77,6 +77,9 @@ namespace VulTerGen
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkDeviceWaitIdle)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkQueueWaitIdle)
 
+		DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateShaderModule)
+		DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyShaderModule)
+
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkGetBufferMemoryRequirements)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkAllocateMemory)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateBuffer)

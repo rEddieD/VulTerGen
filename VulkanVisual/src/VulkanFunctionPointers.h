@@ -78,6 +78,9 @@ namespace VulTerGen
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkResetCommandPool)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyCommandPool)
 
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateShaderModule)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyShaderModule)
+
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCmdPipelineBarrier)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCmdClearColorImage)
 };

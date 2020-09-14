@@ -4,7 +4,16 @@
 
 namespace VulTerGen
 {
-	extern VkDevice logicalDevice;
+	Shader::Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type)
+	{
+		this->logicalDevice = logicalDevice;
+		this->shader = CreateShader(filename, type);
+	}
+
+	Shader::~Shader()
+	{
+		DestroyShader(shader);
+	}
 
 	VkShaderModule Shader::CreateShader(const std::string& filename, VkShaderStageFlagBits type)
 	{

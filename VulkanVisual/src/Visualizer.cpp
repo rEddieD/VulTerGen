@@ -4,7 +4,7 @@
 #include <vulkan/vulkan.hpp>
 #include <vector>
 #include "Visualizer.h"
-
+#include "Shader.h"
 #include <bitset>
 
 namespace VulTerGen
@@ -731,6 +731,8 @@ namespace VulTerGen
 			//RenderLoop();
 			//---------------------------------
 
+			Shader vertexShader(logicalDevice, "shader\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+			Shader fragmentShader(logicalDevice, "shader\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 			//DestroySwapchain();
 			//DestroyLogicalDevice();

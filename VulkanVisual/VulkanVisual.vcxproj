@@ -20,6 +20,10 @@
     <ClInclude Include="src\Visualizer.h" />
     <ClInclude Include="src\VulkanFunctionPointers.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
