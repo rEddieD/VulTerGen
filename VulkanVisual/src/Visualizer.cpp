@@ -566,52 +566,8 @@ namespace VulTerGen
 
 		unsigned int indices[] = { 0, 1, 2, 2, 3, 0 };
 
-		//Single module can contain code for multiple shader stages
-		//Shader compilation and linkage is performed during the pipeline object creation.
-		VkShaderModule vertexShaderModule = nullptr;
-		VkShaderModule fragmentShaderModule = nullptr;
-
-		//Shader module
-		VkShaderModuleCreateInfo vertexShaderModuleCreateInfo = {
-			vertexShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-			vertexShaderModuleCreateInfo.pNext = nullptr,
-			vertexShaderModuleCreateInfo.flags = 0,
-			vertexShaderModuleCreateInfo.codeSize = 0, //have to change
-			vertexShaderModuleCreateInfo.pCode = nullptr //have to change
-		};
-
-		VkShaderModuleCreateInfo fragmentShaderModuleCreateInfo = {
-			fragmentShaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-			fragmentShaderModuleCreateInfo.pNext = nullptr,
-			fragmentShaderModuleCreateInfo.flags = 0,
-			fragmentShaderModuleCreateInfo.codeSize = 0, //have to change
-			fragmentShaderModuleCreateInfo.pCode = nullptr //have to change
-		};
-
-		//vkCreateShaderModule(logicalDevice, &vertexShaderModuleCreateInfo, nullptr, &vertexShaderModule);
-		//vkCreateShaderModule(logicalDevice, &fragmentShaderModuleCreateInfo, nullptr, &fragmentShaderModule);
-
-		VkPipelineShaderStageCreateInfo vertexShaderStageCreateInfo = {
-			vertexShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-			vertexShaderStageCreateInfo.pNext = nullptr,
-			vertexShaderStageCreateInfo.flags = 0,
-			vertexShaderStageCreateInfo.stage = VK_SHADER_STAGE_VERTEX_BIT,
-			vertexShaderStageCreateInfo.module = vertexShaderModule,
-			vertexShaderStageCreateInfo.pName = "main",
-			vertexShaderStageCreateInfo.pSpecializationInfo = nullptr
-		};
-
-		VkPipelineShaderStageCreateInfo fragmentShaderStageCreateInfo = {
-			fragmentShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-			fragmentShaderStageCreateInfo.pNext = nullptr,
-			fragmentShaderStageCreateInfo.flags = 0,
-			fragmentShaderStageCreateInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-			fragmentShaderStageCreateInfo.module = fragmentShaderModule,
-			fragmentShaderStageCreateInfo.pName = "main",
-			fragmentShaderStageCreateInfo.pSpecializationInfo = nullptr
-		};
-
-
+		Shader vertexShader(logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+		Shader fragmentShader(logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 
 		VkVertexInputBindingDescription vertexInputBindingDescription = {
@@ -646,10 +602,10 @@ namespace VulTerGen
 			pipelineVertexInputStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 			pipelineVertexInputStateCreateInfo.pNext = nullptr,
 			pipelineVertexInputStateCreateInfo.flags = 0,
-			pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 0,		//1,
-			pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions = nullptr,	//&vertexInputBindingDescription,
-			pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = 0,		//vertexInputAttribDescriptions.size(),
-			pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = nullptr	//vertexInputAttribDescriptions.data()
+			pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 1,											//1,
+			pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexInputBindingDescription,					//&vertexInputBindingDescription,
+			pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = vertexInputAttribDescriptions.size(),		//vertexInputAttribDescriptions.size(),
+			pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexInputAttribDescriptions.data()										//vertexInputAttribDescriptions.data()
 		};
 
 		VkPipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo = {

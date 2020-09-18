@@ -11,7 +11,7 @@ namespace VulTerGen
 	Shader::Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type)
 	{
 		this->logicalDevice = logicalDevice;
-		this->shader = CreateShader(filename, type);
+		this->module = CreateShader(filename, type);
 	}
 
 	Shader::~Shader()
@@ -43,11 +43,22 @@ namespace VulTerGen
 
 		vkCreateShaderModule(logicalDevice, &shaderModuleCreateInfo, nullptr, &shaderModule);
 
+
+		shaderStageCreateInfo = {
+			shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+			shaderStageCreateInfo.pNext = nullptr,
+			shaderStageCreateInfo.flags = 0,
+			shaderStageCreateInfo.stage = type,
+			shaderStageCreateInfo.module = module,
+			shaderStageCreateInfo.pName = "main",
+			shaderStageCreateInfo.pSpecializationInfo = nullptr
+		};
+
 		return shaderModule;
 	}
 
 	void Shader::DestroyShader()
 	{
-		vkDestroyShaderModule(logicalDevice, shader, nullptr);
+		vkDestroyShaderModule(logicalDevice, module, nullptr);
 	}
 }
