@@ -605,7 +605,7 @@ namespace VulTerGen
 			pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount = 1,											//1,
 			pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions = &vertexInputBindingDescription,					//&vertexInputBindingDescription,
 			pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount = vertexInputAttribDescriptions.size(),		//vertexInputAttribDescriptions.size(),
-			pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexInputAttribDescriptions.data()										//vertexInputAttribDescriptions.data()
+			pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions = vertexInputAttribDescriptions.data()			//vertexInputAttribDescriptions.data()
 		};
 
 		VkPipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo = {
@@ -641,12 +641,60 @@ namespace VulTerGen
 		};
 
 
-		//VkPipelineRasterizationStateCreateInfo pipelineRasterizerStateCreateInfo = {
-		//	pipelineRasterizerStateCreateInfo.sType = ,
-		//	pipelineRasterizerStateCreateInfo.pNext = ,
-		//	pipelineRasterizerStateCreateInfo.flags = ,
-		//	pipelineRasterizerStateCreateInfo.
-		//};
+		VkPipelineRasterizationStateCreateInfo pipelineRasterizerStateCreateInfo = {
+			pipelineRasterizerStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+			pipelineRasterizerStateCreateInfo.pNext = nullptr,
+			pipelineRasterizerStateCreateInfo.flags = 0,
+			pipelineRasterizerStateCreateInfo.depthClampEnable = VK_TRUE, //REQUIRES FEATURE If True Fragments that are beyond the near and far planes are clamped to them as opposed to discarding them
+			pipelineRasterizerStateCreateInfo.rasterizerDiscardEnable = VK_FALSE, //If True it won't allow the geometry to further pass through to later stages
+			pipelineRasterizerStateCreateInfo.polygonMode = VK_POLYGON_MODE_FILL,
+			pipelineRasterizerStateCreateInfo.cullMode = VK_CULL_MODE_BACK_BIT,
+			pipelineRasterizerStateCreateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE, //clockwise or counterclockwise
+			pipelineRasterizerStateCreateInfo.depthBiasEnable = VK_FALSE, //used for shadow mapping
+			pipelineRasterizerStateCreateInfo.depthBiasConstantFactor = 0.0f, //used for shadow mapping
+			pipelineRasterizerStateCreateInfo.depthBiasClamp = 0.0f, //used for shadow mapping
+			pipelineRasterizerStateCreateInfo.depthBiasSlopeFactor = 0.0f, //used for shadow mapping
+			pipelineRasterizerStateCreateInfo.lineWidth = 1.0 //Not sure
+		};
+
+		VkPipelineLayout pipelineLayout;
+
+		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
+			pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+			pipelineLayoutCreateInfo.pNext = nullptr,
+			pipelineLayoutCreateInfo.flags = 0,
+			pipelineLayoutCreateInfo.setLayoutCount = 0, //NEED TO CHANGE
+			pipelineLayoutCreateInfo.pSetLayouts = nullptr, //NEED TO CHANGE
+			pipelineLayoutCreateInfo.pushConstantRangeCount = 0, //NEED TO CHANGE
+			pipelineLayoutCreateInfo.pPushConstantRanges = nullptr //NEED TO CHANGE
+		};
+
+		vkCreatePipelineLayout(logicalDevice, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+
+		VkGraphicsPipelineCreateInfo graphicPipelineCreateInfo = {
+			graphicPipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+			graphicPipelineCreateInfo.pNext = nullptr,
+			graphicPipelineCreateInfo.flags = 0,
+			graphicPipelineCreateInfo.stageCount = ,
+			graphicPipelineCreateInfo.pStages= ,
+			graphicPipelineCreateInfo.pVertexInputState = &pipelineVertexInputStateCreateInfo,
+			graphicPipelineCreateInfo.pInputAssemblyState = &pipelineInputAssemblyStateCreateInfo,
+			graphicPipelineCreateInfo.pTessellationState = nullptr,
+			graphicPipelineCreateInfo.pViewportState = &pipelineViewportStateCreateInfo,
+			graphicPipelineCreateInfo.pRasterizationState = &pipelineRasterizerStateCreateInfo,
+			graphicPipelineCreateInfo.pMultisampleState = nullptr,
+			graphicPipelineCreateInfo.pDepthStencilState = nullptr,
+			graphicPipelineCreateInfo.pColorBlendState = nullptr,
+			graphicPipelineCreateInfo.pDynamicState = nullptr,
+			graphicPipelineCreateInfo.layout = ,
+			graphicPipelineCreateInfo.renderPass = ,
+			graphicPipelineCreateInfo.subpass = ,
+			graphicPipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE,
+			graphicPipelineCreateInfo.basePipelineIndex = -1
+		};
+
+
+		vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
 	}
 
 	
