@@ -731,8 +731,8 @@ namespace VulTerGen
 			//RenderLoop();
 			//---------------------------------
 
-			Shader vertexShader(logicalDevice, "shader\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-			Shader fragmentShader(logicalDevice, "shader\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+			Shader vertexShader(logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+			Shader fragmentShader(logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 			//DestroySwapchain();
 			//DestroyLogicalDevice();

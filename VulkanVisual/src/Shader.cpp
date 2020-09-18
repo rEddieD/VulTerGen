@@ -2,8 +2,12 @@
 #include <vulkan/vulkan.hpp>
 #include "Shader.h"
 
+
 namespace VulTerGen
 {
+	extern PFN_vkCreateShaderModule vkCreateShaderModule;
+	extern PFN_vkDestroyShaderModule vkDestroyShaderModule;
+
 	Shader::Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type)
 	{
 		this->logicalDevice = logicalDevice;
@@ -12,12 +16,15 @@ namespace VulTerGen
 
 	Shader::~Shader()
 	{
-		DestroyShader(shader);
+		DestroyShader();
 	}
 
 	VkShaderModule Shader::CreateShader(const std::string& filename, VkShaderStageFlagBits type)
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
+		if (!file.is_open()) {
+			throw std::runtime_error("failed to open file!");
+		}
 		size_t filesize = (size_t)file.tellg();
 		std::vector<char> shaderBinary(filesize);
 		file.seekg(0);
@@ -39,8 +46,8 @@ namespace VulTerGen
 		return shaderModule;
 	}
 
-	void Shader::DestroyShader(VkShaderModule shaderModule)
+	void Shader::DestroyShader()
 	{
-		vkDestroyShaderModule(logicalDevice, shaderModule, nullptr);
+		vkDestroyShaderModule(logicalDevice, shader, nullptr);
 	}
 }

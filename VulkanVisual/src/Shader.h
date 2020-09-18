@@ -11,6 +11,6 @@ namespace VulTerGen
 		Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type);
 		virtual ~Shader();
 		VkShaderModule CreateShader(const std::string& filename, VkShaderStageFlagBits type);
-		void DestroyShader(VkShaderModule shaderModule);
+		void DestroyShader();
 	};
 }
