@@ -573,12 +573,12 @@ namespace VulTerGen
 
 		VkVertexInputBindingDescription vertexInputBindingDescription = {
 			vertexInputBindingDescription.binding = 0, //where the data is taken from (from which binding)
-			vertexInputBindingDescription.stride = 6 * sizeof(float), //what is the stride between consecutive elements in the buffer pos.x, pos.y, pos.z, col.x, col.y, col.z
+			vertexInputBindingDescription.stride = 3 * sizeof(float), //what is the stride between consecutive elements in the buffer pos.x, pos.y, pos.z, //col.x, col.y, col.z
 			vertexInputBindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX //how this data is read
 		};
 
 		std::vector<VkVertexInputAttributeDescription> vertexInputAttribDescriptions;
-
+		
 		//These are the vertex position coordinates
 		VkVertexInputAttributeDescription vertexInputPosAttributeDescription = {
 			vertexInputPosAttributeDescription.location = 0,
@@ -587,16 +587,16 @@ namespace VulTerGen
 			vertexInputPosAttributeDescription.offset = 0
 		};
 
-		vertexInputAttribDescriptions.push_back(vertexInputPosAttributeDescription);
+		//vertexInputAttribDescriptions.push_back(vertexInputPosAttributeDescription);
 
-		VkVertexInputAttributeDescription vertexInputColAttributeDescription = {
-			vertexInputColAttributeDescription.location = 1,
-			vertexInputColAttributeDescription.binding = 0,
-			vertexInputColAttributeDescription.format = VK_FORMAT_R32G32B32_SFLOAT,
-			vertexInputColAttributeDescription.offset = 3 * sizeof(float)
-		};
+		//VkVertexInputAttributeDescription vertexInputColAttributeDescription = {
+		//	vertexInputColAttributeDescription.location = 1,
+		//	vertexInputColAttributeDescription.binding = 0,
+		//	vertexInputColAttributeDescription.format = VK_FORMAT_R32G32B32_SFLOAT,
+		//	vertexInputColAttributeDescription.offset = 3 * sizeof(float)
+		//};
 
-		vertexInputAttribDescriptions.push_back(vertexInputColAttributeDescription);
+		//vertexInputAttribDescriptions.push_back(vertexInputColAttributeDescription);
 
 		//If it is hardcoded in the shader then no need to specify
 		VkPipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo = {
