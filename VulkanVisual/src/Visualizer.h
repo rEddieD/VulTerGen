@@ -51,6 +51,17 @@ namespace VulTerGen
 	VkPresentInfoKHR presentInfo;
 	VkCommandBuffer commandBuffer;
 	VkPipelineStageFlags flags;
+
+	std::vector<VkFramebuffer> swapChainFramebuffers;
+	std::vector<VkImageView> attachments;
+
+	VkBuffer vertexBuffer;
+	VkPipeline graphicPipeline;
+	VkPipelineLayout pipelineLayout;
+	VkRenderPass renderPass;
+
+	//Memory object
+	VkDeviceMemory memoryObject;
 	
 	//Debug
 	PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT;
