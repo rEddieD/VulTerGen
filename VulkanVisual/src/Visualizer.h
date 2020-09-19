@@ -33,6 +33,7 @@ namespace VulTerGen
 	//Surface related
 	VkSurfaceKHR presentationSurface;
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	VkSurfaceFormatKHR surfaceFormat;
 
 	//Queues
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;

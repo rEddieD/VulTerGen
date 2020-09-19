@@ -6,12 +6,12 @@ namespace VulTerGen
 	{
 	private:
 		VkDevice logicalDevice;
-		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
 	public:
 		VkShaderModule module;
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
 		Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type);
 		virtual ~Shader();
-		VkShaderModule CreateShader(const std::string& filename, VkShaderStageFlagBits type);
+		void CreateShader(const std::string& filename, VkShaderStageFlagBits type);
 		void DestroyShader();
 	};
 }

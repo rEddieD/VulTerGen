@@ -2,7 +2,6 @@
 #include <vulkan/vulkan.hpp>
 #include "Shader.h"
 
-
 namespace VulTerGen
 {
 	extern PFN_vkCreateShaderModule vkCreateShaderModule;
@@ -11,7 +10,7 @@ namespace VulTerGen
 	Shader::Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type)
 	{
 		this->logicalDevice = logicalDevice;
-		this->module = CreateShader(filename, type);
+		CreateShader(filename, type);
 	}
 
 	Shader::~Shader()
@@ -19,7 +18,7 @@ namespace VulTerGen
 		DestroyShader();
 	}
 
-	VkShaderModule Shader::CreateShader(const std::string& filename, VkShaderStageFlagBits type)
+	void Shader::CreateShader(const std::string& filename, VkShaderStageFlagBits type)
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 		if (!file.is_open()) {
@@ -39,10 +38,7 @@ namespace VulTerGen
 				shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(shaderBinary.data())
 		};
 
-		VkShaderModule shaderModule;
-
-		vkCreateShaderModule(logicalDevice, &shaderModuleCreateInfo, nullptr, &shaderModule);
-
+		vkCreateShaderModule(logicalDevice, &shaderModuleCreateInfo, nullptr, &module);
 
 		shaderStageCreateInfo = {
 			shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -53,12 +49,11 @@ namespace VulTerGen
 			shaderStageCreateInfo.pName = "main",
 			shaderStageCreateInfo.pSpecializationInfo = nullptr
 		};
-
-		return shaderModule;
 	}
 
 	void Shader::DestroyShader()
 	{
-		vkDestroyShaderModule(logicalDevice, module, nullptr);
+		if (module != nullptr)
+			vkDestroyShaderModule(logicalDevice, module, nullptr);
 	}
 }
