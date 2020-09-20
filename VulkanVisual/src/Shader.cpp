@@ -25,7 +25,7 @@ namespace VulTerGen
 			throw std::runtime_error("failed to open file!");
 		}
 		size_t filesize = (size_t)file.tellg();
-		std::vector<char> shaderBinary(filesize);
+		shaderBinary.resize(filesize);
 		file.seekg(0);
 		file.read(shaderBinary.data(), filesize);
 		file.close();

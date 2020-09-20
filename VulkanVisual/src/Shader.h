@@ -6,6 +6,7 @@ namespace VulTerGen
 	{
 	private:
 		VkDevice logicalDevice;
+		std::vector<char> shaderBinary;
 	public:
 		VkShaderModule module;
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;

@@ -49,11 +49,11 @@ namespace VulTerGen
 	VkSemaphore commandBufferFinishedSemaphore;
 	VkSubmitInfo submitInfo;
 	VkPresentInfoKHR presentInfo;
-	VkCommandBuffer commandBuffer;
+	std::vector<VkCommandBuffer> commandBuffers;
 	VkPipelineStageFlags flags;
 
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-	std::vector<VkImageView> attachments;
+	std::vector<VkFramebuffer> swapchainFramebuffers;
+	std::vector<VkImageView> swapchainImageViews;
 
 	VkBuffer vertexBuffer;
 	VkPipeline graphicPipeline;
