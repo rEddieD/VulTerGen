@@ -17,14 +17,6 @@ namespace VulTerGen
 	__declspec(dllexport) void Loop();
 	__declspec(dllexport) void Stop();
 
-	class Application
-	{
-	public:
-		Application();
-		~Application();
-	private:
-	};
-
 	//Main Vulkan objects
 	VkInstance instance;
 	VkPhysicalDevice physicalDevice;

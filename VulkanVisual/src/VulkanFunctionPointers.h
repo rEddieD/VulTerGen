@@ -18,8 +18,8 @@
 namespace VulTerGen
 {
 	bool LoadVulkanLibrary();
-	void LoadInstanceLevelFunctions();
-	void LoadDeviceLevelFunctions();
+	void LoadInstanceLevelFunctions(VkInstance instance);
+	void LoadDeviceLevelFunctions(VkDevice logicalDevice);
 	void FreeVulkanLibrary();
 
 	//PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
@@ -41,8 +41,9 @@ namespace VulTerGen
 	INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceQueueFamilyProperties)
 
 	INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetDeviceQueue)
-
+#ifdef VK_USE_PLATFORM_WIN32_KHR
 	INSTANCE_LEVEL_VULKAN_FUNCTION(vkCreateWin32SurfaceKHR)
+#endif
 	INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceSurfaceSupportKHR)
 	INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceSurfacePresentModesKHR)
 	INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceSurfaceCapabilitiesKHR)
@@ -71,6 +72,7 @@ namespace VulTerGen
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyBuffer)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkBindBufferMemory)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateImageView)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyImageView)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkMapMemory)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkUnmapMemory)
 

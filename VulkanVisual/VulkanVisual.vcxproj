@@ -11,16 +11,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Command.cpp" />
+    <ClCompile Include="src\Device.cpp" />
+    <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\Pipeline.cpp" />
+    <ClCompile Include="src\RenderPass.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Swapchain.cpp" />
     <ClCompile Include="src\Visualizer.cpp" />
     <ClCompile Include="src\VulkanFunctionPointers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Command.h" />
+    <ClInclude Include="src\Device.h" />
+    <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\Pipeline.h" />
+    <ClInclude Include="src\RenderPass.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Swapchain.h" />
     <ClInclude Include="src\Visualizer.h" />
     <ClInclude Include="src\VulkanFunctionPointers.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
   </ItemGroup>

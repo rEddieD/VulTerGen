@@ -19,6 +19,7 @@ ApplicationWindow::~ApplicationWindow()
 	if (ConsoleWindowEnabled)
 	{
 		DestroyConsoleWindow();
+		ConsoleWindowEnabled = false;
 	}
 	this->wndHandle = NULL;
 }

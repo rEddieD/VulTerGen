@@ -10,9 +10,6 @@ namespace VulTerGen
 {
 	HMODULE vulkan_library;
 
-	extern VkInstance instance;
-	extern VkDevice logicalDevice;
-
 	// Macros for getting function pointers
 	#define EXPORTED_VULKAN_FUNCTION( name ) name = (PFN_##name)GetProcAddress( vulkan_library, #name );
 	#define GLOBAL_LEVEL_VULKAN_FUNCTION( name ) name = (PFN_##name)vkGetInstanceProcAddr(nullptr, #name);
@@ -38,7 +35,7 @@ namespace VulTerGen
 		return true;
 	}
 
-	void LoadInstanceLevelFunctions()
+	void LoadInstanceLevelFunctions(VkInstance instance)
 	{
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkDestroyInstance)
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkCreateDevice)
@@ -52,7 +49,9 @@ namespace VulTerGen
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceQueueFamilyProperties)
 
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetDeviceQueue)
+#ifdef VK_USE_PLATFORM_WIN32_KHR
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkCreateWin32SurfaceKHR)
+#endif
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceSurfaceSupportKHR)
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceSurfacePresentModesKHR)
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetPhysicalDeviceSurfaceCapabilitiesKHR)
@@ -61,11 +60,12 @@ namespace VulTerGen
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkDestroySwapchainKHR)
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetSwapchainImagesKHR)
 		INSTANCE_LEVEL_VULKAN_FUNCTION(vkAcquireNextImageKHR)
+
+		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetDeviceProcAddr)
 	}
 
-	void LoadDeviceLevelFunctions()
+	void LoadDeviceLevelFunctions(VkDevice logicalDevice)
 	{
-		INSTANCE_LEVEL_VULKAN_FUNCTION(vkGetDeviceProcAddr)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateSemaphore)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroySemaphore)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateFence)
@@ -88,6 +88,7 @@ namespace VulTerGen
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateFramebuffer)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyFramebuffer)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateImageView)
+		DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyImageView)
 
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkGetBufferMemoryRequirements)
 		DEVICE_LEVEL_VULKAN_FUNCTION(vkAllocateMemory)
