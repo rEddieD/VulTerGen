@@ -1,12 +1,8 @@
 #include <fstream>
-#include <vulkan/vulkan.hpp>
 #include "Shader.h"
 
 namespace VulTerGen
 {
-	extern PFN_vkCreateShaderModule vkCreateShaderModule;
-	extern PFN_vkDestroyShaderModule vkDestroyShaderModule;
-
 	Shader::Shader(VkDevice logicalDevice, const std::string& filename, VkShaderStageFlagBits type)
 	{
 		this->logicalDevice = logicalDevice;
@@ -53,7 +49,10 @@ namespace VulTerGen
 
 	void Shader::DestroyShader()
 	{
-		if (module != nullptr)
+		if (module != VK_NULL_HANDLE)
+		{
 			vkDestroyShaderModule(logicalDevice, module, nullptr);
+			module = VK_NULL_HANDLE;
+		}
 	}
 }
