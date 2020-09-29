@@ -15,6 +15,12 @@ namespace VulTerGen
 		VkSurfaceKHR presentationSurface;
 		VkSwapchainKHR swapchain;
 
+<<<<<<< HEAD
+=======
+		std::vector<VkImage> swapchainImages;
+		std::vector<VkImageView> swapchainImageViews;
+
+>>>>>>> origin/master
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 		void CreatePresentationSurface(HWND hWnd);
@@ -46,6 +52,7 @@ namespace VulTerGen
 
 		VkSemaphore CreateSemaphores();
 		void DestroySemaphores(VkSemaphore semaphore);
+<<<<<<< HEAD
 		void SetupDraw(std::vector<VkCommandBuffer>& commandBuffers);
 		void Draw();
 		void EndDraw();
@@ -53,6 +60,12 @@ namespace VulTerGen
 		std::vector<VkImage> swapchainImages;
 		std::vector<VkImageView> swapchainImageViews;
 
+=======
+		void SetupDraw(std::vector<VkCommandBuffer> commandBuffers);
+		void Draw();
+		void EndDraw();
+
+>>>>>>> origin/master
 		VkSurfaceFormatKHR surfaceFormat;
 		VkSurfaceCapabilitiesKHR surfaceCapabilities;
 		uint32_t graphicQueueFamilyIndex;

@@ -15,7 +15,11 @@ namespace VulTerGen
 	//Exported functions:
 	/*__declspec(dllexport) void Start(HWND hWnd);
 	__declspec(dllexport) void Loop();
+<<<<<<< HEAD
 	__declspec(dllexport) void Stop();*/
+=======
+	__declspec(dllexport) void Stop();
+>>>>>>> origin/master
 
 	//Main Vulkan objects
 	//VkInstance instance;

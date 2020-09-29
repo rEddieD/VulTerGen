@@ -8,7 +8,10 @@
 #include "Swapchain.h"
 #include "Pipeline.h"
 #include "Command.h"
+<<<<<<< HEAD
 #include "RenderPass.h"
+=======
+>>>>>>> origin/master
 
 namespace VulTerGen
 {
@@ -23,7 +26,10 @@ namespace VulTerGen
 
 		//All of the physical devices
 		//std::vector<VkPhysicalDevice> physicalDevices;
+<<<<<<< HEAD
 		RenderPass* renderPass;
+=======
+>>>>>>> origin/master
 		Pipeline* pipeline;
 		Command* command;
 
@@ -36,12 +42,15 @@ namespace VulTerGen
 		void EndDraw();
 
 	private:
+<<<<<<< HEAD
 		void CreateVertexBuffer();
 		void DestroyVertexBuffer();
 		VkDeviceMemory memoryObject;
 		VkBuffer vertexBuffer;
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
+=======
+>>>>>>> origin/master
 		void CreateVulkanInstance();
 		void DestroyVulkanInstance();
 

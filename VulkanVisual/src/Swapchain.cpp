@@ -155,7 +155,10 @@ namespace VulTerGen
 
 		for (uint32_t i = 0; i < swapchainImages.size(); ++i)
 		{
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 			VkFramebufferCreateInfo framebufferCreateInfo = {
 			framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 			framebufferCreateInfo.pNext = nullptr,
@@ -222,7 +225,11 @@ namespace VulTerGen
 		}
 	}
 
+<<<<<<< HEAD
 	void Swapchain::SetupDraw(std::vector<VkCommandBuffer>& commandBuffers)
+=======
+	void Swapchain::SetupDraw(std::vector<VkCommandBuffer> commandBuffers)
+>>>>>>> origin/master
 	{
 		imageAvailableSemaphore = CreateSemaphores();
 		commandBufferFinishedSemaphore = CreateSemaphores();
@@ -262,7 +269,11 @@ namespace VulTerGen
 		//Wait previous actions
 		vkQueueWaitIdle(device->mainGraphicQueue);
 
+<<<<<<< HEAD
 		VkResult res = vkQueueSubmit(device->mainGraphicQueue, 1, &submitInfo, nullptr);
+=======
+		vkQueueSubmit(device->mainGraphicQueue, 1, &submitInfo, nullptr);
+>>>>>>> origin/master
 
 		vkQueuePresentKHR(device->mainGraphicQueue, &presentInfo);
 	}

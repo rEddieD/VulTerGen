@@ -3,6 +3,7 @@
 
 namespace VulTerGen
 {
+<<<<<<< HEAD
 	Pipeline::Pipeline(Device* device, Swapchain* swapchain, RenderPass* renderPass)
 	{
 			this->device = device;
@@ -27,12 +28,45 @@ namespace VulTerGen
 			SetMultisampleState();
 
 			CreateGraphicPipeline();
+=======
+	//TODO COLLECT ALL THE ATTACHMENTS THAT ARE NEEDED
+	Pipeline::Pipeline(VkDevice logicalDevice, VkSurfaceFormatKHR surfaceFormat, VkSurfaceCapabilitiesKHR surfaceCapabilities)
+	{
+		this->logicalDevice = logicalDevice;
+		this->surfaceCapabilities = surfaceCapabilities;
+
+		renderPass =  new RenderPass(logicalDevice, surfaceFormat);
+
+		vertexShader = new Shader(logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+		fragmentShader = new Shader(logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+
+		pipelineShaderStageCreateInfos.push_back(vertexShader->shaderStageCreateInfo);
+		pipelineShaderStageCreateInfos.push_back(fragmentShader->shaderStageCreateInfo);
+
+		CreatePipelineLayout();
+
+		SetVertexInputState();
+		SetInputAssemblyState();
+		SetViewportState();
+		SetRasterizationState();
+		SetColorBlendState();
+		SetMultisampleState();
+
+		CreateGraphicPipeline();
+>>>>>>> origin/master
 	}
 
 	Pipeline::~Pipeline()
 	{
 		DestoryGraphicPipeline();
 		DestroyPipelineLayout();
+<<<<<<< HEAD
+=======
+		delete fragmentShader;
+		delete vertexShader;
+
+		delete renderPass;
+>>>>>>> origin/master
 	}
 
 	void Pipeline::AddVertexInputBindingDescription()
@@ -90,15 +124,24 @@ namespace VulTerGen
 		viewport = {
 			viewport.x = 0.0f,
 			viewport.y = 0.0f,
+<<<<<<< HEAD
 			viewport.width = swapchain->surfaceCapabilities.currentExtent.width,
 			viewport.height = swapchain->surfaceCapabilities.currentExtent.height,
+=======
+			viewport.width = surfaceCapabilities.currentExtent.width,
+			viewport.height = surfaceCapabilities.currentExtent.height,
+>>>>>>> origin/master
 			viewport.minDepth = 0.0f,
 			viewport.maxDepth = 1.0f
 		};
 
 		scissor = {
 			scissor.offset = {0, 0},
+<<<<<<< HEAD
 			scissor.extent = swapchain->surfaceCapabilities.currentExtent
+=======
+			scissor.extent = surfaceCapabilities.currentExtent
+>>>>>>> origin/master
 		};
 
 		pipelineViewportStateCreateInfo = {
@@ -178,14 +221,22 @@ namespace VulTerGen
 			pipelineLayoutCreateInfo.pPushConstantRanges = nullptr
 		};
 
+<<<<<<< HEAD
 		vkCreatePipelineLayout(device->logicalDevice, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+=======
+		vkCreatePipelineLayout(logicalDevice, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
+>>>>>>> origin/master
 	}
 
 	void Pipeline::DestroyPipelineLayout()
 	{
 		if (pipelineLayout != VK_NULL_HANDLE)
 		{
+<<<<<<< HEAD
 			vkDestroyPipelineLayout(device->logicalDevice, pipelineLayout, nullptr);
+=======
+			vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
+>>>>>>> origin/master
 			pipelineLayout = VK_NULL_HANDLE;
 		}
 	}
@@ -214,14 +265,22 @@ namespace VulTerGen
 			graphicPipelineCreateInfo.basePipelineIndex = -1
 		};
 
+<<<<<<< HEAD
 		vkCreateGraphicsPipelines(device->logicalDevice, nullptr, 1, &graphicPipelineCreateInfo, nullptr, &graphicPipeline);
+=======
+		vkCreateGraphicsPipelines(logicalDevice, nullptr, 1, &graphicPipelineCreateInfo, nullptr, &graphicPipeline);
+>>>>>>> origin/master
 	}
 
 	void Pipeline::DestoryGraphicPipeline()
 	{
 		if (graphicPipeline != VK_NULL_HANDLE)
 		{
+<<<<<<< HEAD
 			vkDestroyPipeline(device->logicalDevice, graphicPipeline, nullptr);
+=======
+			vkDestroyPipeline(logicalDevice, graphicPipeline, nullptr);
+>>>>>>> origin/master
 			graphicPipeline = VK_NULL_HANDLE;
 		}
 	}
