@@ -2,17 +2,10 @@
 
 namespace VulTerGen
 {
-<<<<<<< HEAD
 	RenderPass::RenderPass(Device* device, Swapchain* swapchain)
 	{
 		this->device = device;
 		this->swapchain = swapchain;
-=======
-	RenderPass::RenderPass(VkDevice logicalDevice, VkSurfaceFormatKHR surfaceFormat)
-	{
-		this->logicalDevice = logicalDevice;
-		this->surfaceFormat = surfaceFormat;
->>>>>>> origin/master
 
 		AddColorAttachment();
 		AddSubpass();
@@ -30,22 +23,14 @@ namespace VulTerGen
 			renderPassCreateInfo.pDependencies = subpassDependencies.data()
 		};
 
-<<<<<<< HEAD
 		vkCreateRenderPass(device->logicalDevice, &renderPassCreateInfo, nullptr, &renderPass);
-=======
-		vkCreateRenderPass(logicalDevice, &renderPassCreateInfo, nullptr, &renderPass);
->>>>>>> origin/master
 	}
 
 	RenderPass::~RenderPass()
 	{
 		if (renderPass != VK_NULL_HANDLE)
 		{
-<<<<<<< HEAD
 			vkDestroyRenderPass(device->logicalDevice, renderPass, nullptr);
-=======
-			vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
->>>>>>> origin/master
 			renderPass = VK_NULL_HANDLE;
 		}
 	}
@@ -54,11 +39,7 @@ namespace VulTerGen
 	{
 		VkAttachmentDescription colorAttachment = {
 			colorAttachment.flags = 0,
-<<<<<<< HEAD
 			colorAttachment.format = swapchain->surfaceFormat.format,
-=======
-			colorAttachment.format = surfaceFormat.format,
->>>>>>> origin/master
 			colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT,
 			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
 			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE,

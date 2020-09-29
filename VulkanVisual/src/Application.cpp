@@ -17,7 +17,6 @@ namespace VulTerGen
 #ifdef _DEBUG
 		InitializeDebug();
 #endif
-<<<<<<< HEAD
 
 		VkPhysicalDevice selectedDevice = SelectPhysicalDevice();
 		device = new Device(selectedDevice, layers, deviceExtensions);
@@ -31,33 +30,10 @@ namespace VulTerGen
 		pipeline = new Pipeline(device, swapchain, renderPass);
 		command = new Command(device, swapchain, pipeline, renderPass);
 		command->RecordCommandBuffer(vertexBuffer);
-=======
-		if (device == nullptr)
-		{
-			VkPhysicalDevice selectedDevice = SelectPhysicalDevice();
-			device = new Device(selectedDevice, layers, deviceExtensions);
-
-			LoadDeviceLevelFunctions(device->logicalDevice);
-
-			if (swapchain == nullptr)
-			{
-				swapchain = new Swapchain(instance, device, hWnd);
-
-				if (pipeline == nullptr)
-				{
-					pipeline = new Pipeline(device->logicalDevice, swapchain->surfaceFormat, swapchain->surfaceCapabilities);
-
-					swapchain->CreateFramebuffer(pipeline->renderPass->renderPass);
-					command = new Command(device, swapchain, pipeline);
-				}
-			}
-		}
->>>>>>> origin/master
 	}
 
 	Application::~Application()
 	{
-<<<<<<< HEAD
 		delete command;
 		delete pipeline;
 		swapchain->DestroyFramebuffer();
@@ -65,22 +41,6 @@ namespace VulTerGen
 		delete renderPass;
 		delete swapchain;
 		delete device;
-=======
-		if (device != nullptr)
-		{
-			if (swapchain != nullptr)
-			{
-				if (pipeline != nullptr)
-				{
-					delete command;
-					swapchain->DestroyFramebuffer();
-					delete pipeline;
-				}
-				delete swapchain;
-			}
-			delete device;
-		}
->>>>>>> origin/master
 
 #ifdef _DEBUG
 		DeinitializeDebug();
@@ -104,7 +64,6 @@ namespace VulTerGen
 		swapchain->EndDraw();
 	}
 
-<<<<<<< HEAD
 	void Application::CreateVertexBuffer()
 	{
 		float positions[] = { -0.5f, -0.8f,  0.0f,
@@ -168,19 +127,13 @@ namespace VulTerGen
 		vkDestroyBuffer(device->logicalDevice, vertexBuffer, nullptr);
 	}
 
-=======
->>>>>>> origin/master
 	void Application::CreateVulkanInstance()
 	{
 		//Desired instance extensions
 		assert(CompareDesiredInstanceExtensionsWithAvailable(instanceExtensions) != true);
 
 		//Desired layers
-<<<<<<< HEAD
 		assert(CompareDesiredLayersWithAvailable(layers) == true);
-=======
-		assert(CompareDesiredLayersWithAvailable(layers) != true);
->>>>>>> origin/master
 
 		VkApplicationInfo applicationInfo =
 		{
@@ -273,7 +226,6 @@ namespace VulTerGen
 	bool Application::CompareDesiredLayersWithAvailable(std::vector<const char*> desiredLayers)
 	{
 		std::vector<VkLayerProperties> availableLayers = GetAvailableLayers();
-<<<<<<< HEAD
 		bool found = false;
 		for (auto& desiredLayer : desiredLayers)
 		{
@@ -298,28 +250,6 @@ namespace VulTerGen
 			}
 		}
 		return found;
-=======
-		std::vector<const char*> availableLayerNames(availableLayers.size());
-
-		for (uint32_t i = 0; i < availableLayers.size(); ++i)
-		{
-			availableLayerNames[i] = availableLayers[i].layerName;
-		}
-
-		for (uint32_t i = 0; i < desiredLayers.size(); ++i)
-		{
-			if (std::find(availableLayerNames.begin(), availableLayerNames.end(), desiredLayers[i]) != availableLayerNames.end())
-			{
-				//Element found
-			}
-			else
-			{
-				//Element not found
-				return false;
-			}
-		}
-		return true;
->>>>>>> origin/master
 	}
 
 	bool Application::CompareDesiredDeviceExtensionsWithAvailable(VkPhysicalDevice physicalDevice, std::vector<const char*> desiredDeviceExtensions)

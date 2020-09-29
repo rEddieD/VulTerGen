@@ -9,11 +9,7 @@ namespace VulTerGen
 		this->deviceExtensions = deviceExtensions;
 		GetGraphicQueueFamilies();
 		CreateLogicalDevice();
-<<<<<<< HEAD
-		GetDeviceQueue(queueFamilies[0].queueFamilyIndex, 5);
-=======
 		GetDeviceQueue(queueFamilies[0].queueFamilyIndex, 0);
->>>>>>> origin/master
 	}
 
 	Device::~Device()

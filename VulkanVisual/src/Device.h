@@ -16,8 +16,6 @@ namespace VulTerGen
 		};
 		QueueFamily queuefamily;
 
-
-
 		void CreateLogicalDevice();
 		void DestroyLogicalDevice();
 		void GetGraphicQueueFamilies();
