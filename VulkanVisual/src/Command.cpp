@@ -64,7 +64,7 @@ namespace VulTerGen
 		}
 	}
 
-	void Command::RecordCommandBuffer(VkBuffer vertexBuffer)
+	void Command::RecordCommandBuffer(VkBuffer vertexBuffer, std::array<float, 4> color, float time)
 	{
 		VkCommandBufferBeginInfo commandBufferBeginInfo =
 		{
@@ -98,11 +98,13 @@ namespace VulTerGen
 
 			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->graphicPipeline);
 
+			vkCmdPushConstants(commandBuffers[i], pipeline->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, static_cast<uint32_t>(sizeof(color[0]) * color.size()), &color);
+
 			VkBuffer vertexBuffers[] = { vertexBuffer };
 			VkDeviceSize offsets[] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
 
-			vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			vkCmdDraw(commandBuffers[i], 4, 1, 0, 0);
 
 			vkCmdEndRenderPass(commandBuffers[i]);
 

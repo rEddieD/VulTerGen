@@ -254,14 +254,14 @@ namespace VulTerGen
 		};
 	}
 
-	void Swapchain::Draw()
+	void Swapchain::Draw(VkFence commandBufferExecutionFinished)
 	{
 		vkAcquireNextImageKHR(device->logicalDevice, swapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &swapchainImageIndex);
 
 		//Wait previous actions
 		vkQueueWaitIdle(device->mainGraphicQueue);
 
-		vkQueueSubmit(device->mainGraphicQueue, 1, &submitInfo, nullptr);
+		vkQueueSubmit(device->mainGraphicQueue, 1, &submitInfo, commandBufferExecutionFinished);
 
 		vkQueuePresentKHR(device->mainGraphicQueue, &presentInfo);
 	}

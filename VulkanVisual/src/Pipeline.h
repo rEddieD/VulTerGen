@@ -13,12 +13,13 @@ namespace VulTerGen
 	{
 	public:
 		VkPipeline graphicPipeline;
+		VkPipelineLayout pipelineLayout; //Pipeline layouts are used only in three situations--creating pipelines, binding descriptor sets, and updating push constants
+		VkDescriptorSetLayout descriptorSetLayout;
 	private:
 		Device* device;
 		Swapchain* swapchain;
 		RenderPass* renderPass;
-
-		VkPipelineLayout pipelineLayout; //Pipeline layouts are used only in three situations--creating pipelines, binding descriptor sets, and updating push constants
+		
 		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo;
 
 		std::vector<VkPipelineShaderStageCreateInfo> pipelineShaderStageCreateInfos;

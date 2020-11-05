@@ -37,7 +37,7 @@ namespace VulTerGen
 
 	void Pipeline::AddVertexInputBindingDescription()
 	{
-		//Defines the verts x, y ,z component
+		//Defines the verts x, y ,z component4
 		VkVertexInputBindingDescription vertexInputBindingDescription = {
 			vertexInputBindingDescription.binding = 0, //where the data is taken from (from which binding)
 			vertexInputBindingDescription.stride = 3 * sizeof(float), //what is the stride between consecutive elements in the buffer pos.x, pos.y, pos.z, //col.x, col.y, col.z
@@ -80,7 +80,7 @@ namespace VulTerGen
 			pipelineInputAssemblyStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
 			pipelineInputAssemblyStateCreateInfo.pNext = nullptr,
 			pipelineInputAssemblyStateCreateInfo.flags = 0,
-			pipelineInputAssemblyStateCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+			pipelineInputAssemblyStateCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
 			pipelineInputAssemblyStateCreateInfo.primitiveRestartEnable = VK_FALSE
 		};
 	}
@@ -168,14 +168,39 @@ namespace VulTerGen
 
 	void Pipeline::CreatePipelineLayout()
 	{
+		VkPushConstantRange pushConstantRange{};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(float) * 4;
+
+		//VkDescriptorSetLayoutBinding uboTransformLayout =
+		//{
+		//	uboTransformLayout.binding = 0,
+		//	uboTransformLayout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		//	uboTransformLayout.descriptorCount = 1,
+		//	uboTransformLayout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+		//	uboTransformLayout.pImmutableSamplers = nullptr
+		//};
+
+		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo =
+		{
+			descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+			descriptorSetLayoutInfo.pNext = nullptr,
+			descriptorSetLayoutInfo.flags = 0,
+			descriptorSetLayoutInfo.bindingCount = 0,//1,
+			descriptorSetLayoutInfo.pBindings = nullptr//&uboTransformLayout
+		};
+
+		vkCreateDescriptorSetLayout(device->logicalDevice, &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout);
+
 		pipelineLayoutCreateInfo = {
 			pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 			pipelineLayoutCreateInfo.pNext = nullptr,
 			pipelineLayoutCreateInfo.flags = 0,
-			pipelineLayoutCreateInfo.setLayoutCount = 0,
-			pipelineLayoutCreateInfo.pSetLayouts = nullptr,
-			pipelineLayoutCreateInfo.pushConstantRangeCount = 0,
-			pipelineLayoutCreateInfo.pPushConstantRanges = nullptr
+			pipelineLayoutCreateInfo.setLayoutCount = 1,
+			pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout,
+			pipelineLayoutCreateInfo.pushConstantRangeCount = 1,
+			pipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange
 		};
 
 		vkCreatePipelineLayout(device->logicalDevice, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout);
@@ -185,6 +210,7 @@ namespace VulTerGen
 	{
 		if (pipelineLayout != VK_NULL_HANDLE)
 		{
+			vkDestroyDescriptorSetLayout(device->logicalDevice, descriptorSetLayout, nullptr);
 			vkDestroyPipelineLayout(device->logicalDevice, pipelineLayout, nullptr);
 			pipelineLayout = VK_NULL_HANDLE;
 		}

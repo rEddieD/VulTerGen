@@ -73,7 +73,7 @@ HWND ApplicationWindow::RegisterWindowClass(HINSTANCE hInstance, const WNDPROC& 
 	windowRect.top = 0;
 	windowRect.bottom = LONG(windowHeight);
 
-	DWORD style = WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+	DWORD style = WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU ;
 	DWORD exStyle = WS_EX_APPWINDOW;
 
 	AdjustWindowRectEx(&windowRect, style, FALSE, exStyle);
@@ -100,7 +100,7 @@ HWND ApplicationWindow::RegisterWindowClass(HINSTANCE hInstance, const WNDPROC& 
 
 LRESULT CALLBACK ApplicationWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//void (*myPtr)() = &VulTerGen::Loop;
+	void (*myPtr)() = &VulTerGen::Loop;
 	switch (uMsg)
 	{
 	case WM_CLOSE:
@@ -111,8 +111,7 @@ LRESULT CALLBACK ApplicationWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		PostQuitMessage(0);
 		break;
 	case WM_PAINT:
-		//FpsCounter(myPtr, hWnd);
-		VulTerGen::Loop();
+		FpsCounter(myPtr, hWnd);
 		break;
 	default:
 		break;
@@ -155,45 +154,45 @@ void ApplicationWindow::MessageLoop()
 	//}
 }
 
-//void ApplicationWindow::FpsCounter(void (*thisProc)(void), HWND wndHandle)
-//{
-//	LARGE_INTEGER startTime;
-//	LARGE_INTEGER endTime;
-//	LARGE_INTEGER elapsedTime;
-//
-//	LARGE_INTEGER frequency;
-//	
-//	//Constant from bootup (Large performance counter) Current value: 10 000 000
-//	QueryPerformanceFrequency(&frequency);
-//	QueryPerformanceCounter(&startTime);
-//
-//	thisProc();
-//
-//	QueryPerformanceCounter(&endTime);
-//	elapsedTime.QuadPart = endTime.QuadPart - startTime.QuadPart;
-//	//Guard against loss of precision
-//	//elapsedTime.QuadPart *= 10000000;
-//	//elapsedTime.QuadPart *= 1 / frequency.QuadPart;
-//	//std::cout << time << " \xE6s" << std::endl;
-//
-//
-//	//std::cout << elapsedTime.QuadPart << " elapsed tick" << std::endl;
-//	double time = elapsedTime.QuadPart * ((double)1 / frequency.QuadPart);
-//	//std::cout << time << " s" << std::endl;
-//	double frames = double(1) / time;
-//	//std::cout << frames << " FPS" << std::endl;
-//
-//	//char mycharArray[] = "Output on the window";
-//
-//
-//	//_ecvt_s(mycharArray, strlen(mycharArray), frames, 5, nullptr, nullptr);
-//
-//	//wchar_t wtext[30];
-//	//mbstowcs_s(nullptr ,wtext, mycharArray, strlen(mycharArray) + 1);//Plus null
-//	
-//	std::wstring frameString = std::to_wstring(frames);
-//	std::wstring mainName = L"VulTerGen Main Window " + frameString;
-//	LPCTSTR FPS = mainName.c_str();
-//	SetWindowText(wndHandle, FPS);
-//
-//}
+void ApplicationWindow::FpsCounter(void (*thisProc)(void), HWND wndHandle)
+{
+	LARGE_INTEGER startTime;
+	LARGE_INTEGER endTime;
+	LARGE_INTEGER elapsedTime;
+
+	LARGE_INTEGER frequency;
+	
+	//Constant from bootup (Large performance counter) Current value: 10 000 000
+	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&startTime);
+
+	thisProc();
+
+	QueryPerformanceCounter(&endTime);
+	elapsedTime.QuadPart = endTime.QuadPart - startTime.QuadPart;
+	//Guard against loss of precision
+	//elapsedTime.QuadPart *= 10000000;
+	//elapsedTime.QuadPart *= 1 / frequency.QuadPart;
+	//std::cout << time << " \xE6s" << std::endl;
+
+
+	//std::cout << elapsedTime.QuadPart << " elapsed tick" << std::endl;
+	double time = elapsedTime.QuadPart * ((double)1 / frequency.QuadPart);
+	//std::cout << time << " s" << std::endl;
+	double frames = double(1) / time;
+	//std::cout << frames << " FPS" << std::endl;
+
+	//char mycharArray[] = "Output on the window";
+
+
+	//_ecvt_s(mycharArray, strlen(mycharArray), frames, 5, nullptr, nullptr);
+
+	//wchar_t wtext[30];
+	//mbstowcs_s(nullptr ,wtext, mycharArray, strlen(mycharArray) + 1);//Plus null
+	
+	std::wstring frameString = std::to_wstring(frames);
+	std::wstring mainName = L"VulTerGen Main Window " + frameString;
+	LPCTSTR FPS = mainName.c_str();
+	SetWindowText(wndHandle, FPS);
+
+}

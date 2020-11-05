@@ -48,7 +48,7 @@ namespace VulTerGen
 		void DestroySemaphores(VkSemaphore semaphore);
 
 		void SetupDraw(std::vector<VkCommandBuffer>& commandBuffers);
-		void Draw();
+		void Draw(VkFence commandBufferExecutionFinished);
 		void EndDraw();
 
 		std::vector<VkImage> swapchainImages;

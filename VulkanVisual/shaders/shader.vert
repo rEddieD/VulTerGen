@@ -3,10 +3,16 @@
 layout (location = 0) in vec3 VertPosition;
 layout (location = 0) out vec3 FragColor;
 
-vec3 colors[3] = vec3[](
+layout( push_constant ) uniform pushConstants
+{
+	vec4 color;
+} pushConstant;
+
+vec3 colors[4] = vec3[](
     vec3(1.0, 0.0, 0.0),
     vec3(0.0, 1.0, 0.0),
-    vec3(0.0, 0.0, 1.0)
+    vec3(0.0, 0.0, 1.0) + pushConstant.color.rgb,
+    pushConstant.color.rgb
 );
 
 void main()

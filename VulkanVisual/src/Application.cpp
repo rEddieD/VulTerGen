@@ -1,6 +1,9 @@
 #include "Application.h"
 #include <iostream>
 #include <algorithm>
+#include <chrono>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace VulTerGen
 {
@@ -29,7 +32,8 @@ namespace VulTerGen
 		swapchain->CreateFramebuffer(renderPass->renderPass);
 		pipeline = new Pipeline(device, swapchain, renderPass);
 		command = new Command(device, swapchain, pipeline, renderPass);
-		command->RecordCommandBuffer(vertexBuffer);
+		time = 0.0f;
+		//command->RecordCommandBuffer(vertexBuffer, color, time);
 	}
 
 	Application::~Application()
@@ -51,12 +55,38 @@ namespace VulTerGen
 
 	void Application::SetupDraw()
 	{
+		VkFenceCreateInfo fenceCreateInfo =
+		{
+			fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+			fenceCreateInfo.pNext = nullptr,
+			fenceCreateInfo.flags = 0
+		};
+
+		vkCreateFence(device->logicalDevice, &fenceCreateInfo, nullptr, &commandBufferExecutionFinished);
 		swapchain->SetupDraw(command->commandBuffers);
+
 	}
+
+
+	struct UniformBufferObject
+	{
+		glm::mat4 model;
+	};
 
 	void Application::Draw()
 	{
-		swapchain->Draw();
+		UniformBufferObject ubo{};
+
+		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+		auto start = std::chrono::high_resolution_clock::now();
+		color[0] = glm::abs(glm::sin(time * 4));
+		command->RecordCommandBuffer(vertexBuffer, color, time);
+		vkResetFences(device->logicalDevice, 1, &commandBufferExecutionFinished);
+		swapchain->Draw(commandBufferExecutionFinished);
+		vkWaitForFences(device->logicalDevice, 1, &commandBufferExecutionFinished, VK_TRUE, UINT64_MAX);
+		auto end = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float> duration = end - start;
+		time += duration.count();
 	}
 
 	void Application::EndDraw()
@@ -66,9 +96,10 @@ namespace VulTerGen
 
 	void Application::CreateVertexBuffer()
 	{
-		float positions[] = { -0.5f, -0.8f,  0.0f,
-						0.5f, -0.5f,  0.0f,
-						0.5f,  0.5f,  0.0f };
+		float positions[] = {  -0.5f, -0.5f,  0.0f,
+							   -0.5f,  0.5f,  0.0f,
+								0.5f, -0.5f,  0.0f,
+							    0.5f,  0.5f,  0.0f};
 
 		//Recreate pipeline if changing shaders
 		VkBufferCreateInfo vertexBufferCreateInfo =
@@ -130,7 +161,7 @@ namespace VulTerGen
 	void Application::CreateVulkanInstance()
 	{
 		//Desired instance extensions
-		assert(CompareDesiredInstanceExtensionsWithAvailable(instanceExtensions) != true);
+		assert(CompareDesiredInstanceExtensionsWithAvailable(instanceExtensions) == true);
 
 		//Desired layers
 		assert(CompareDesiredLayersWithAvailable(layers) == true);
@@ -202,25 +233,30 @@ namespace VulTerGen
 	bool Application::CompareDesiredInstanceExtensionsWithAvailable(std::vector<const char*> desiredExtensions)
 	{
 		std::vector<VkExtensionProperties> availableExtensions = GetAvailableInstanceExtensions();
-		std::vector<const char*> availableExtensionNames(availableExtensions.size());
-
-		for (uint32_t i = 0; i < availableExtensions.size(); ++i)
+		bool found = false;
+		for (auto& desiredExtension : desiredExtensions)
 		{
-			availableExtensionNames[i] = availableExtensions[i].extensionName;
-		}
-
-		for (uint32_t i = 0; i < desiredExtensions.size(); ++i)
-		{
-			if (std::find(availableExtensionNames.begin(), availableExtensionNames.end(), desiredExtensions[i]) != availableExtensionNames.end())
+			found = false;
+			for (auto& availableExtension : availableExtensions)
 			{
-				//Element found
+				if (!strcmp(availableExtension.extensionName, desiredExtension))
+				{
+					found = true;
+					break;
+				}
 			}
+			//If found proceed to next element
+			if (found == true)
+			{
+				continue;
+			}
+			//If one layer is not found then exit the loop
 			else
 			{
-				//Element not found
-				return false;
+				break;
 			}
 		}
+		return found;
 	}
 
 	bool Application::CompareDesiredLayersWithAvailable(std::vector<const char*> desiredLayers)
@@ -254,27 +290,27 @@ namespace VulTerGen
 
 	bool Application::CompareDesiredDeviceExtensionsWithAvailable(VkPhysicalDevice physicalDevice, std::vector<const char*> desiredDeviceExtensions)
 	{
-		std::vector<VkExtensionProperties> availableDeviceExtensions = GetAvailableDeviceExtensions(physicalDevice);
-		std::vector<const char*> availableDeviceExtensionNames(availableDeviceExtensions.size());
+		//std::vector<VkExtensionProperties> availableDeviceExtensions = GetAvailableDeviceExtensions(physicalDevice);
+		//std::vector<const char*> availableDeviceExtensionNames(availableDeviceExtensions.size());
 
-		for (uint32_t i = 0; i < availableDeviceExtensions.size(); ++i)
-		{
-			availableDeviceExtensionNames[i] = availableDeviceExtensions[i].extensionName;
-		}
+		//for (uint32_t i = 0; i < availableDeviceExtensions.size(); ++i)
+		//{
+		//	availableDeviceExtensionNames[i] = availableDeviceExtensions[i].extensionName;
+		//}
 
-		for (uint32_t i = 0; i < desiredDeviceExtensions.size(); ++i)
-		{
-			auto found = std::find(std::begin(availableDeviceExtensionNames), std::end(availableDeviceExtensionNames), desiredDeviceExtensions[i]);
-			if (found != std::end(availableDeviceExtensionNames))
-			{
-				//Element found
-			}
-			else
-			{
-				//Element not found
-				return false;
-			}
-		}
+		//for (uint32_t i = 0; i < desiredDeviceExtensions.size(); ++i)
+		//{
+		//	auto found = std::find(std::begin(availableDeviceExtensionNames), std::end(availableDeviceExtensionNames), desiredDeviceExtensions[i]);
+		//	if (found != std::end(availableDeviceExtensionNames))
+		//	{
+		//		//Element found
+		//	}
+		//	else
+		//	{
+		//		//Element not found
+		//		return false;
+		//	}
+		//}
 		return true;
 	}
 

@@ -27,7 +27,7 @@ namespace VulTerGen
 		void AllocateCommandBufferFromPool();
 		void DeallocateCommandBuffersFromPool();
 
-		void RecordCommandBuffer(VkBuffer vertexBuffer);
+		void RecordCommandBuffer(VkBuffer vertexBuffer, std::array<float, 4> color, float time);
 
 		std::vector<VkCommandBuffer> commandBuffers;
 	};

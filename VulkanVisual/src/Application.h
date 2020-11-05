@@ -36,11 +36,14 @@ namespace VulTerGen
 		void EndDraw();
 
 	private:
+		std::array<float, 4> color = { 0.0f, 0.7f, 0.4f, 0.1f };
 		void CreateVertexBuffer();
 		void DestroyVertexBuffer();
 		VkDeviceMemory memoryObject;
 		VkBuffer vertexBuffer;
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		VkFence commandBufferExecutionFinished;
+		float time;
 
 		void CreateVulkanInstance();
 		void DestroyVulkanInstance();
