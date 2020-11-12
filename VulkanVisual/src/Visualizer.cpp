@@ -1,12 +1,8 @@
 #include "Application.h"
+#include "Visualizer.h"
 
 namespace VulTerGen
 {
-	//Exported functions:
-	__declspec(dllexport) void Start(HWND hWnd);
-	__declspec(dllexport) void Loop();
-	__declspec(dllexport) void Stop();
-
 	Application* app;
 	bool finished;
 

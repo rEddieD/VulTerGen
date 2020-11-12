@@ -59,5 +59,15 @@ namespace VulTerGen
 		void DestroyPipelineLayout();
 		void CreateGraphicPipeline();
 		void DestoryGraphicPipeline();
+
+
+
+		std::vector<VkBuffer> uniformBuffers;
+		std::vector<VkDeviceMemory> uniformBuffersMemory;
+
+		void AllocateUbo();
+
+		std::vector<VkDescriptorSet> descriptorSets;
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts;
 	};
 }

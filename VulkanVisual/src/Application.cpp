@@ -32,8 +32,6 @@ namespace VulTerGen
 		swapchain->CreateFramebuffer(renderPass->renderPass);
 		pipeline = new Pipeline(device, swapchain, renderPass);
 		command = new Command(device, swapchain, pipeline, renderPass);
-		time = 0.0f;
-		//command->RecordCommandBuffer(vertexBuffer, color, time);
 	}
 
 	Application::~Application()
@@ -53,6 +51,13 @@ namespace VulTerGen
 		FreeVulkanLibrary();
 	}
 
+	struct UniformBufferObject
+	{
+		glm::mat4 model;
+	};
+
+	VkDescriptorPool descriptorPool;
+
 	void Application::SetupDraw()
 	{
 		VkFenceCreateInfo fenceCreateInfo =
@@ -64,20 +69,89 @@ namespace VulTerGen
 
 		vkCreateFence(device->logicalDevice, &fenceCreateInfo, nullptr, &commandBufferExecutionFinished);
 		swapchain->SetupDraw(command->commandBuffers);
+		time = 0.0f;
 
+
+		UniformBufferObject ubo{};
+		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+
+		void* data;
+		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
+		{
+			vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i], 0, sizeof(ubo), 0, &data);
+			memcpy(data, &ubo, sizeof(ubo));
+		}
+
+		//DECRIPTOR POOL-------------------------------------------------------------------------------
+
+		VkDescriptorPoolSize descPoolSize =
+		{
+			descPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			descPoolSize.descriptorCount = static_cast<uint32_t>(swapchain->swapchainImages.size())
+		};
+
+		VkDescriptorPoolCreateInfo descPoolInfo =
+		{
+			descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+			descPoolInfo.pNext = nullptr,
+			descPoolInfo.flags = 0,
+			descPoolInfo.maxSets = static_cast<uint32_t>(swapchain->swapchainImages.size()),
+			descPoolInfo.poolSizeCount = 1,
+			descPoolInfo.pPoolSizes = &descPoolSize
+		};
+
+		vkCreateDescriptorPool(device->logicalDevice, &descPoolInfo, nullptr, &descriptorPool);
+
+
+		//DESCRIPTOR LAYOUT---------------------------------------------------------------------------------
+
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts(swapchain->swapchainImages.size(), pipeline->descriptorSetLayout);
+
+		//DESCRIPTOR SET
+
+		VkDescriptorSetAllocateInfo descSetAllocInfo =
+		{
+			descSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+			descSetAllocInfo.pNext = nullptr,
+			descSetAllocInfo.descriptorPool = descriptorPool,
+			descSetAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapchain->swapchainImages.size()),
+			descSetAllocInfo.pSetLayouts = descriptorSetLayouts.data()
+		};
+
+		
+
+		pipeline->descriptorSets.resize(swapchain->swapchainImages.size());
+		vkAllocateDescriptorSets(device->logicalDevice, &descSetAllocInfo, pipeline->descriptorSets.data());
+
+		for (size_t i = 0; i < swapchain->swapchainImages.size(); i++) 
+		{
+			VkDescriptorBufferInfo bufferInfo =
+			{
+				bufferInfo.buffer = pipeline->uniformBuffers[i],
+				bufferInfo.offset = 0,
+				bufferInfo.range = sizeof(UniformBufferObject)
+			};
+
+			VkWriteDescriptorSet descriptorWrite =
+			{
+				descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				descriptorWrite.pNext = nullptr,
+				descriptorWrite.dstSet = pipeline->descriptorSets[i],
+				descriptorWrite.dstBinding = 0,
+				descriptorWrite.dstArrayElement = 0,
+				descriptorWrite.descriptorCount = 1,
+				descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+				descriptorWrite.pImageInfo = nullptr,
+				descriptorWrite.pBufferInfo = &bufferInfo,
+				descriptorWrite.pTexelBufferView = nullptr
+			};
+
+			vkUpdateDescriptorSets(device->logicalDevice, 1, &descriptorWrite, 0, nullptr);
+		}
 	}
-
-
-	struct UniformBufferObject
-	{
-		glm::mat4 model;
-	};
 
 	void Application::Draw()
 	{
-		UniformBufferObject ubo{};
-
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
 		auto start = std::chrono::high_resolution_clock::now();
 		color[0] = glm::abs(glm::sin(time * 4));
 		command->RecordCommandBuffer(vertexBuffer, color, time);
@@ -92,6 +166,13 @@ namespace VulTerGen
 	void Application::EndDraw()
 	{
 		swapchain->EndDraw();
+
+		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
+		{
+			vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
+		}
+
+		vkDestroyDescriptorPool(device->logicalDevice, descriptorPool, nullptr);
 	}
 
 	void Application::CreateVertexBuffer()

@@ -76,6 +76,13 @@ namespace VulTerGen
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkMapMemory)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkUnmapMemory)
 
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateDescriptorPool)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyDescriptorPool)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkAllocateDescriptorSets)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkUpdateDescriptorSets)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateDescriptorSetLayout)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyDescriptorSetLayout)
+
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateCommandPool)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkAllocateCommandBuffers)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkFreeCommandBuffers)
@@ -89,8 +96,6 @@ namespace VulTerGen
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyShaderModule)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreatePipelineLayout)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyPipelineLayout)
-	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateDescriptorSetLayout)
-	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyDescriptorSetLayout)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCreateGraphicsPipelines)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkDestroyPipeline)
 
@@ -107,6 +112,7 @@ namespace VulTerGen
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCmdDraw)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCmdBindVertexBuffers)
 	DEVICE_LEVEL_VULKAN_FUNCTION(vkCmdPushConstants)
+	DEVICE_LEVEL_VULKAN_FUNCTION(vkCmdBindDescriptorSets)
 };
 
 #undef EXPORTED_VULKAN_FUNCTION

@@ -1,5 +1,8 @@
 #include "Pipeline.h"
 #include "VulkanFunctionPointers.h"
+#include "Memory.h"
+
+#include <glm/glm.hpp>
 
 namespace VulTerGen
 {
@@ -17,6 +20,8 @@ namespace VulTerGen
 
 			AddVertexInputBindingDescription();
 			AddVertexInputAttributeDescription();
+
+			AllocateUbo();
 
 			SetVertexInputState();
 			SetInputAssemblyState();
@@ -166,29 +171,48 @@ namespace VulTerGen
 		};
 	}
 
+	void Pipeline::AllocateUbo()
+	{
+		struct UniformBufferObject
+		{
+			glm::mat4 model;
+		};
+
+		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+		uniformBuffers.resize(swapchain->swapchainImages.size());
+		uniformBuffersMemory.resize(swapchain->swapchainImages.size());
+
+		//Allocate ubo for each swapchain image
+		for (size_t i = 0; i < swapchain->swapchainImages.size(); i++)
+		{
+			AllocateMemory(device, uniformBuffers[i], bufferSize, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffersMemory[i]);
+		}
+	}
+
 	void Pipeline::CreatePipelineLayout()
 	{
-		VkPushConstantRange pushConstantRange{};
-		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-		pushConstantRange.offset = 0;
-		pushConstantRange.size = sizeof(float) * 4;
+		VkPushConstantRange pushConstantRange = {
+			pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+			pushConstantRange.offset = 0,
+			pushConstantRange.size = sizeof(float) * 4
+		};
 
-		//VkDescriptorSetLayoutBinding uboTransformLayout =
-		//{
-		//	uboTransformLayout.binding = 0,
-		//	uboTransformLayout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		//	uboTransformLayout.descriptorCount = 1,
-		//	uboTransformLayout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-		//	uboTransformLayout.pImmutableSamplers = nullptr
-		//};
+		VkDescriptorSetLayoutBinding uboLayoutBinding = {
+			uboLayoutBinding.binding = 0,
+			uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			uboLayoutBinding.descriptorCount = 1,
+			uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+			uboLayoutBinding.pImmutableSamplers = nullptr
+		};
 
 		VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo =
 		{
 			descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 			descriptorSetLayoutInfo.pNext = nullptr,
 			descriptorSetLayoutInfo.flags = 0,
-			descriptorSetLayoutInfo.bindingCount = 0,//1,
-			descriptorSetLayoutInfo.pBindings = nullptr//&uboTransformLayout
+			descriptorSetLayoutInfo.bindingCount = 1,//1,
+			descriptorSetLayoutInfo.pBindings = &uboLayoutBinding//&uboTransformLayout
 		};
 
 		vkCreateDescriptorSetLayout(device->logicalDevice, &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout);
@@ -210,6 +234,11 @@ namespace VulTerGen
 	{
 		if (pipelineLayout != VK_NULL_HANDLE)
 		{
+			for (size_t i = 0; i < swapchain->swapchainImages.size(); i++) {
+				vkDestroyBuffer(device->logicalDevice, uniformBuffers[i], nullptr);
+				vkFreeMemory(device->logicalDevice, uniformBuffersMemory[i], nullptr);
+			}
+
 			vkDestroyDescriptorSetLayout(device->logicalDevice, descriptorSetLayout, nullptr);
 			vkDestroyPipelineLayout(device->logicalDevice, pipelineLayout, nullptr);
 			pipelineLayout = VK_NULL_HANDLE;
