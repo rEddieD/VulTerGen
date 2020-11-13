@@ -57,6 +57,7 @@ namespace VulTerGen
 	};
 
 	VkDescriptorPool descriptorPool;
+	UniformBufferObject ubo{};
 
 	void Application::SetupDraw()
 	{
@@ -72,7 +73,7 @@ namespace VulTerGen
 		time = 0.0f;
 
 
-		UniformBufferObject ubo{};
+		
 		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
 
 		void* data;
@@ -150,14 +151,35 @@ namespace VulTerGen
 		}
 	}
 
+
 	void Application::Draw()
 	{
 		auto start = std::chrono::high_resolution_clock::now();
+
+		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
+		{
+			vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[0]);
+		}
+
+		
 		color[0] = glm::abs(glm::sin(time * 4));
+
+
+		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3((glm::sin(time * 4)), (glm::sin(time * 2)), 0.0f));
+
 		command->RecordCommandBuffer(vertexBuffer, color, time);
 		vkResetFences(device->logicalDevice, 1, &commandBufferExecutionFinished);
 		swapchain->Draw(commandBufferExecutionFinished);
 		vkWaitForFences(device->logicalDevice, 1, &commandBufferExecutionFinished, VK_TRUE, UINT64_MAX);
+
+
+		void* data;
+		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
+		{
+			vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[0], 0, sizeof(ubo), 0, &data);
+			memcpy(data, &ubo, sizeof(ubo));
+		}
+
 		auto end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> duration = end - start;
 		time += duration.count();
