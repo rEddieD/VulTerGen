@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <chrono>
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -54,6 +55,8 @@ namespace VulTerGen
 	struct UniformBufferObject
 	{
 		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 proj;
 	};
 
 	VkDescriptorPool descriptorPool;
@@ -74,7 +77,9 @@ namespace VulTerGen
 
 
 		
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, 0.0f));
+		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, -9.0f));
+		ubo.view = glm::mat4(1.0f);
+		ubo.proj = glm::perspective(glm::radians(45.0f), swapchain->surfaceCapabilities.currentExtent.width / (float)swapchain->surfaceCapabilities.currentExtent.height, 0.1f, 10.0f);
 
 		void* data;
 		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
@@ -152,31 +157,33 @@ namespace VulTerGen
 		}
 	}
 
-
 	void Application::Draw()
 	{
 		auto start = std::chrono::high_resolution_clock::now();
-
+		
 
 		void* data;
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3((glm::sin(time * 4)), (glm::sin(time * 2)), 0.0f));
-		vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[0], 0, sizeof(ubo), 0, &data);
-		memcpy(data, &ubo, sizeof(ubo));
-		vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[0]);
-
+		for (size_t i = 0; i < swapchain->swapchainImages.size(); i++)
+		{
+			ubo.model = glm::rotate(ubo.model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i], 0, sizeof(ubo), 0, &data);
+			memcpy(data, &ubo, sizeof(ubo));
+			vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
+		}
+		
 		
 		color[0] = glm::abs(glm::sin(time * 4));
 
-
 		command->RecordCommandBuffer(vertexBuffer, color, time);
+		
 		vkResetFences(device->logicalDevice, 1, &commandBufferExecutionFinished);
 		swapchain->Draw(commandBufferExecutionFinished);
 		vkWaitForFences(device->logicalDevice, 1, &commandBufferExecutionFinished, VK_TRUE, UINT64_MAX);
 
-
 		auto end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> duration = end - start;
 		time += duration.count();
+
 	}
 
 	void Application::EndDraw()

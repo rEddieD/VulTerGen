@@ -10,6 +10,8 @@ layout( push_constant ) uniform pushConstants
 
 layout(binding = 0) uniform UniformBufferObject {
     mat4 model;
+    mat4 view;
+	mat4 proj;
 } ubo;
 
 vec3 colors[4] = vec3[](
@@ -21,6 +23,6 @@ vec3 colors[4] = vec3[](
 
 void main()
 {
-	gl_Position = ubo.model * vec4(VertPosition, 1.0);
+	gl_Position = ubo.proj * ubo.view * ubo.model * vec4(VertPosition, 1.0);
     FragColor = colors[gl_VertexIndex];
 }
