@@ -11,6 +11,7 @@
     <ClCompile Include="src\Swapchain.cpp" />
     <ClCompile Include="src\Visualizer.cpp" />
     <ClCompile Include="src\VulkanFunctionPointers.cpp" />
+    <ClCompile Include="src\Memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -23,6 +24,7 @@
     <ClInclude Include="src\Swapchain.h" />
     <ClInclude Include="src\Visualizer.h" />
     <ClInclude Include="src\VulkanFunctionPointers.h" />
+    <ClInclude Include="src\Memory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />

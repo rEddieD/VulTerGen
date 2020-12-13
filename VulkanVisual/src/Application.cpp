@@ -77,9 +77,9 @@ namespace VulTerGen
 
 
 		
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, -9.0f));
+		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, -18.0f));
 		ubo.view = glm::mat4(1.0f);
-		ubo.proj = glm::perspective(glm::radians(45.0f), swapchain->surfaceCapabilities.currentExtent.width / (float)swapchain->surfaceCapabilities.currentExtent.height, 0.1f, 10.0f);
+		ubo.proj = glm::perspective(glm::radians(45.0f), swapchain->surfaceCapabilities.currentExtent.width / (float)swapchain->surfaceCapabilities.currentExtent.height, 0.1f, 30.0f);
 
 		void* data;
 		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
@@ -195,10 +195,10 @@ namespace VulTerGen
 
 	void Application::CreateVertexBuffer()
 	{
-		float positions[] = {  -0.5f, -0.5f,  0.0f,
-							   -0.5f,  0.5f,  0.0f,
-								0.5f, -0.5f,  0.0f,
-							    0.5f,  0.5f,  0.0f};
+		float positions[] = {  -5.5f, -5.5f,  0.0f,
+							   -5.5f,  5.5f,  0.0f,
+								5.5f, -5.5f,  0.0f,
+							    5.5f,  5.5f,  0.0f};
 
 		//Recreate pipeline if changing shaders
 		VkBufferCreateInfo vertexBufferCreateInfo =
