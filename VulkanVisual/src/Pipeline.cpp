@@ -2,40 +2,41 @@
 #include "VulkanFunctionPointers.h"
 #include "Memory.h"
 
-#include <glm/glm.hpp>
 
 namespace VulTerGen
 {
 	Pipeline::Pipeline(Device* device, Swapchain* swapchain, RenderPass* renderPass)
 	{
-			this->device = device;
-			this->swapchain = swapchain;
-			this->renderPass = renderPass;
+		this->device = device;
+		this->swapchain = swapchain;
+		this->renderPass = renderPass;
 
-			Shader vertexShader(device->logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-			Shader fragmentShader(device->logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+		Shader vertexShader(device->logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+		Shader fragmentShader(device->logicalDevice, "D:\\Projects\\VulTerGen\\VulkanVisual\\shaders\\frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
-			pipelineShaderStageCreateInfos.push_back(vertexShader.shaderStageCreateInfo);
-			pipelineShaderStageCreateInfos.push_back(fragmentShader.shaderStageCreateInfo);
+		pipelineShaderStageCreateInfos.push_back(vertexShader.shaderStageCreateInfo);
+		pipelineShaderStageCreateInfos.push_back(fragmentShader.shaderStageCreateInfo);
 
-			AddVertexInputBindingDescription();
-			AddVertexInputAttributeDescription();
+		AddVertexInputBindingDescription();
+		AddVertexInputAttributeDescription();
 
-			AllocateUbo();
+		SetVertexInputState();
+		SetInputAssemblyState();
+		SetViewportState();
+		SetRasterizationState();
+		CreatePipelineLayout();
+		SetColorBlendState();
+		SetMultisampleState();
 
-			SetVertexInputState();
-			SetInputAssemblyState();
-			SetViewportState();
-			SetRasterizationState();
-			CreatePipelineLayout();
-			SetColorBlendState();
-			SetMultisampleState();
+		CreateGraphicPipeline();
 
-			CreateGraphicPipeline();
+		//AllocateUbo();
+		//CreateDescriptorPool();
 	}
 
 	Pipeline::~Pipeline()
 	{
+		//DestroyDescriptorPool();
 		DestoryGraphicPipeline();
 		DestroyPipelineLayout();
 	}
@@ -192,6 +193,74 @@ namespace VulTerGen
 		}
 	}
 
+	void Pipeline::CreateDescriptorPool()
+	{
+		VkDescriptorPoolSize descPoolSize =
+		{
+			descPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			descPoolSize.descriptorCount = static_cast<uint32_t>(swapchain->swapchainImages.size())
+		};
+
+		VkDescriptorPoolCreateInfo descPoolInfo =
+		{
+			descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+			descPoolInfo.pNext = nullptr,
+			descPoolInfo.flags = 0,
+			descPoolInfo.maxSets = static_cast<uint32_t>(swapchain->swapchainImages.size()),
+			descPoolInfo.poolSizeCount = 1,
+			descPoolInfo.pPoolSizes = &descPoolSize
+		};
+
+		vkCreateDescriptorPool(device->logicalDevice, &descPoolInfo, nullptr, &descriptorPool);
+
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts(swapchain->swapchainImages.size(), descriptorSetLayout);
+
+		VkDescriptorSetAllocateInfo descSetAllocInfo =
+		{
+			descSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+			descSetAllocInfo.pNext = nullptr,
+			descSetAllocInfo.descriptorPool = descriptorPool,
+			descSetAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapchain->swapchainImages.size()),
+			descSetAllocInfo.pSetLayouts = descriptorSetLayouts.data()
+		};
+
+		descriptorSets.resize(swapchain->swapchainImages.size());
+		vkAllocateDescriptorSets(device->logicalDevice, &descSetAllocInfo, descriptorSets.data());
+
+		for (size_t i = 0; i < swapchain->swapchainImages.size(); i++)
+		{
+			VkDescriptorBufferInfo bufferInfo =
+			{
+				bufferInfo.buffer = uniformBuffers[i],
+				bufferInfo.offset = 0,
+				bufferInfo.range = sizeof(UniformBufferObject)
+			};
+
+			VkWriteDescriptorSet descriptorWrite =
+			{
+				descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				descriptorWrite.pNext = nullptr,
+				descriptorWrite.dstSet = descriptorSets[i],
+				descriptorWrite.dstBinding = 0,
+				descriptorWrite.dstArrayElement = 0,
+				descriptorWrite.descriptorCount = 1,
+				descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+				descriptorWrite.pImageInfo = nullptr,
+				descriptorWrite.pBufferInfo = &bufferInfo,
+				descriptorWrite.pTexelBufferView = nullptr
+			};
+
+			vkUpdateDescriptorSets(device->logicalDevice, 1, &descriptorWrite, 0, nullptr);
+		}
+	}
+
+	void Pipeline::DestroyDescriptorPool()
+	{
+		vkDestroyDescriptorPool(device->logicalDevice, descriptorPool, nullptr);
+	}
+
+	
+
 	void Pipeline::CreatePipelineLayout()
 	{
 		VkPushConstantRange pushConstantRange = {
@@ -213,8 +282,8 @@ namespace VulTerGen
 			descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
 			descriptorSetLayoutInfo.pNext = nullptr,
 			descriptorSetLayoutInfo.flags = 0,
-			descriptorSetLayoutInfo.bindingCount = 1,//1,
-			descriptorSetLayoutInfo.pBindings = &uboLayoutBinding//&uboTransformLayout
+			descriptorSetLayoutInfo.bindingCount = 0,//1,
+			descriptorSetLayoutInfo.pBindings = nullptr//&uboLayoutBinding//&uboLayoutBinding
 		};
 
 		vkCreateDescriptorSetLayout(device->logicalDevice, &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout);

@@ -6,6 +6,7 @@
 #include "Device.h"
 #include "Swapchain.h"
 #include "RenderPass.h"
+#include <glm/glm.hpp>
 
 namespace VulTerGen
 {
@@ -15,6 +16,16 @@ namespace VulTerGen
 		VkPipeline graphicPipeline;
 		VkPipelineLayout pipelineLayout; //Pipeline layouts are used only in three situations--creating pipelines, binding descriptor sets, and updating push constants
 		VkDescriptorSetLayout descriptorSetLayout;
+
+		struct UniformBufferObject
+		{
+			glm::mat4 model;
+			glm::mat4 view;
+			glm::mat4 proj;
+		};
+
+		UniformBufferObject ubo;
+
 	private:
 		Device* device;
 		Swapchain* swapchain;
@@ -61,11 +72,14 @@ namespace VulTerGen
 		void DestoryGraphicPipeline();
 
 
-
 		std::vector<VkBuffer> uniformBuffers;
 		std::vector<VkDeviceMemory> uniformBuffersMemory;
 
 		void AllocateUbo();
+
+		VkDescriptorPool descriptorPool;
+		void CreateDescriptorPool();
+		void DestroyDescriptorPool();
 
 		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts;

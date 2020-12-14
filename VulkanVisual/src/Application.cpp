@@ -8,9 +8,22 @@
 
 namespace VulTerGen
 {
-	std::vector<const char*> instanceExtensions = { VK_EXT_DEBUG_REPORT_EXTENSION_NAME, VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
-	std::vector<const char*> layers = { "VK_LAYER_KHRONOS_validation" };
-	std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	std::vector<const char*> instanceExtensions = 
+	{ 
+		VK_EXT_DEBUG_REPORT_EXTENSION_NAME, 
+		VK_KHR_SURFACE_EXTENSION_NAME, 
+		VK_KHR_WIN32_SURFACE_EXTENSION_NAME 
+	};
+
+	std::vector<const char*> layers = 
+	{ 
+		"VK_LAYER_KHRONOS_validation" 
+	};
+
+	std::vector<const char*> deviceExtensions = 
+	{ 
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME 
+	};
 
 	Application::Application(HWND hWnd)
 	{
@@ -52,15 +65,6 @@ namespace VulTerGen
 		FreeVulkanLibrary();
 	}
 
-	struct UniformBufferObject
-	{
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 proj;
-	};
-
-	VkDescriptorPool descriptorPool;
-	UniformBufferObject ubo{};
 
 	void Application::SetupDraw()
 	{
@@ -74,87 +78,18 @@ namespace VulTerGen
 		vkCreateFence(device->logicalDevice, &fenceCreateInfo, nullptr, &commandBufferExecutionFinished);
 		swapchain->SetupDraw(command->commandBuffers);
 		time = 0.0f;
-
-
 		
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, -18.0f));
-		ubo.view = glm::mat4(1.0f);
-		ubo.proj = glm::perspective(glm::radians(45.0f), swapchain->surfaceCapabilities.currentExtent.width / (float)swapchain->surfaceCapabilities.currentExtent.height, 0.1f, 30.0f);
+		//pipeline->ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, -0.5f, -18.0f));
+		//pipeline->ubo.view = glm::mat4(1.0f);
+		//pipeline->ubo.proj = glm::perspective(glm::radians(45.0f), swapchain->surfaceCapabilities.currentExtent.width / (float)swapchain->surfaceCapabilities.currentExtent.height, 0.1f, 30.0f);
 
-		void* data;
-		for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
-		{
-			vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i], 0, sizeof(ubo), 0, &data);
-			memcpy(data, &ubo, sizeof(ubo));
-			vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
-		}
-
-		//DECRIPTOR POOL-------------------------------------------------------------------------------
-
-		VkDescriptorPoolSize descPoolSize =
-		{
-			descPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-			descPoolSize.descriptorCount = static_cast<uint32_t>(swapchain->swapchainImages.size())
-		};
-
-		VkDescriptorPoolCreateInfo descPoolInfo =
-		{
-			descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-			descPoolInfo.pNext = nullptr,
-			descPoolInfo.flags = 0,
-			descPoolInfo.maxSets = static_cast<uint32_t>(swapchain->swapchainImages.size()),
-			descPoolInfo.poolSizeCount = 1,
-			descPoolInfo.pPoolSizes = &descPoolSize
-		};
-
-		vkCreateDescriptorPool(device->logicalDevice, &descPoolInfo, nullptr, &descriptorPool);
-
-
-		//DESCRIPTOR LAYOUT---------------------------------------------------------------------------------
-
-		std::vector<VkDescriptorSetLayout> descriptorSetLayouts(swapchain->swapchainImages.size(), pipeline->descriptorSetLayout);
-
-		//DESCRIPTOR SET
-
-		VkDescriptorSetAllocateInfo descSetAllocInfo =
-		{
-			descSetAllocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-			descSetAllocInfo.pNext = nullptr,
-			descSetAllocInfo.descriptorPool = descriptorPool,
-			descSetAllocInfo.descriptorSetCount = static_cast<uint32_t>(swapchain->swapchainImages.size()),
-			descSetAllocInfo.pSetLayouts = descriptorSetLayouts.data()
-		};
-
-		
-
-		pipeline->descriptorSets.resize(swapchain->swapchainImages.size());
-		vkAllocateDescriptorSets(device->logicalDevice, &descSetAllocInfo, pipeline->descriptorSets.data());
-
-		for (size_t i = 0; i < swapchain->swapchainImages.size(); i++) 
-		{
-			VkDescriptorBufferInfo bufferInfo =
-			{
-				bufferInfo.buffer = pipeline->uniformBuffers[i],
-				bufferInfo.offset = 0,
-				bufferInfo.range = sizeof(UniformBufferObject)
-			};
-
-			VkWriteDescriptorSet descriptorWrite =
-			{
-				descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				descriptorWrite.pNext = nullptr,
-				descriptorWrite.dstSet = pipeline->descriptorSets[i],
-				descriptorWrite.dstBinding = 0,
-				descriptorWrite.dstArrayElement = 0,
-				descriptorWrite.descriptorCount = 1,
-				descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-				descriptorWrite.pImageInfo = nullptr,
-				descriptorWrite.pBufferInfo = &bufferInfo,
-				descriptorWrite.pTexelBufferView = nullptr
-			};
-
-			vkUpdateDescriptorSets(device->logicalDevice, 1, &descriptorWrite, 0, nullptr);
-		}
+		//void* data;
+		//for (size_t i = 0; i < pipeline->uniformBuffersMemory.size(); i++)
+		//{
+		//	vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i], 0, sizeof(pipeline->ubo), 0, &data);
+		//	memcpy(data, &pipeline->ubo, sizeof(pipeline->ubo));
+		//	vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
+		//}
 	}
 
 	void Application::Draw()
@@ -162,14 +97,14 @@ namespace VulTerGen
 		auto start = std::chrono::high_resolution_clock::now();
 		
 
-		void* data;
-		for (size_t i = 0; i < swapchain->swapchainImages.size(); i++)
-		{
-			ubo.model = glm::rotate(ubo.model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i], 0, sizeof(ubo), 0, &data);
-			memcpy(data, &ubo, sizeof(ubo));
-			vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
-		}
+		//void* data;
+		//for (size_t i = 0; i < swapchain->swapchainImages.size(); i++)
+		//{
+		//	pipeline->ubo.model = glm::rotate(pipeline->ubo.model, glm::radians(0.01f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//	vkMapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i], 0, sizeof(pipeline->ubo), 0, &data);
+		//	memcpy(data, &pipeline->ubo, sizeof(pipeline->ubo));
+		//	vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
+		//}
 		
 		
 		color[0] = glm::abs(glm::sin(time * 4));
@@ -189,16 +124,14 @@ namespace VulTerGen
 	void Application::EndDraw()
 	{
 		swapchain->EndDraw();
-
-		vkDestroyDescriptorPool(device->logicalDevice, descriptorPool, nullptr);
 	}
 
 	void Application::CreateVertexBuffer()
 	{
-		float positions[] = {  -5.5f, -5.5f,  0.0f,
-							   -5.5f,  5.5f,  0.0f,
-								5.5f, -5.5f,  0.0f,
-							    5.5f,  5.5f,  0.0f};
+		float positions[] = {  -0.5f, -0.5f,  0.5f,
+							   -0.5f,  0.5f,  0.5f,
+								0.5f, -0.5f,  0.5f,
+							    0.5f,  0.5f,  0.5f};
 
 		//Recreate pipeline if changing shaders
 		VkBufferCreateInfo vertexBufferCreateInfo =

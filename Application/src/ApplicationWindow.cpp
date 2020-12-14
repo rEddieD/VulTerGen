@@ -10,8 +10,8 @@ ApplicationWindow::ApplicationWindow(HINSTANCE hInstance)
 {
 	ConsoleWindowEnabled = false;
 	this->hInstance = hInstance;
-	windowWidth = 1280;
-	windowHeight = 1024;
+	windowWidth = 1920;
+	windowHeight = 1080;
 }
 
 ApplicationWindow::~ApplicationWindow()
