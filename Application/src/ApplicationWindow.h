@@ -14,6 +14,10 @@ public:
 	void EnableConsoleWindow();
 	HWND CreateGraphicalWindow();
 	void MessageLoop();
+
+	bool EnterFullscreen(HWND hwnd, int fullscreenWidth, int fullscreenHeight, int colourBits, int refreshRate);
+	bool ExitFullscreen(HWND hwnd, int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY);
+
 private:
 	bool ConsoleWindowEnabled;
 	HWND wndHandle;
