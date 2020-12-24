@@ -41,4 +41,54 @@ namespace VulTerGen
 
 		vkBindBufferMemory(device->logicalDevice, buffer, bufferMemory, 0);
 	}
+
+	void CreateVertexBuffer(float positions[])
+	{
+		float positions[] = { -0.5f, -0.5f,  0.5f,
+							   -0.5f,  0.5f,  0.5f,
+								0.5f, -0.5f,  0.5f,
+								0.5f,  0.5f,  0.5f };
+
+		//Recreate pipeline if changing shaders
+		VkBufferCreateInfo vertexBufferCreateInfo =
+		{
+			vertexBufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			vertexBufferCreateInfo.pNext = nullptr,
+			vertexBufferCreateInfo.flags = 0,
+			vertexBufferCreateInfo.size = sizeof(positions),
+			vertexBufferCreateInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+			vertexBufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+			vertexBufferCreateInfo.queueFamilyIndexCount = 1,
+			vertexBufferCreateInfo.pQueueFamilyIndices = &swapchain->graphicQueueFamilyIndex
+		};
+
+		//Creation of vertex buffer
+		vkCreateBuffer(device->logicalDevice, &vertexBufferCreateInfo, nullptr, &vertexBuffer);
+
+		//Get what the buffer needs
+		VkMemoryRequirements memoryRequirements;
+		vkGetBufferMemoryRequirements(device->logicalDevice, vertexBuffer, &memoryRequirements);
+
+		VkMemoryAllocateInfo memoryAllocateInfo =
+		{
+			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+			memoryAllocateInfo.pNext = nullptr,
+			memoryAllocateInfo.allocationSize = memoryRequirements.size,
+			memoryAllocateInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+		};
+
+		vkAllocateMemory(device->logicalDevice, &memoryAllocateInfo, nullptr, &memoryObject);
+
+		vkBindBufferMemory(device->logicalDevice, vertexBuffer, memoryObject, 0);
+
+		void* data;
+		vkMapMemory(device->logicalDevice, memoryObject, 0, vertexBufferCreateInfo.size, 0, &data);
+		memcpy(data, positions, (size_t)vertexBufferCreateInfo.size);
+		vkUnmapMemory(device->logicalDevice, memoryObject);
+	}
+
+	void DestroyVertexBuffer()
+	{
+		vkDestroyBuffer(device->logicalDevice, vertexBuffer, nullptr);
+	}
 }
