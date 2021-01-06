@@ -6,8 +6,12 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Memory.h"
+
 namespace VulTerGen
 {
+	extern VkBuffer vertexBuffer;
+
 	std::vector<const char*> instanceExtensions = 
 	{ 
 		VK_EXT_DEBUG_REPORT_EXTENSION_NAME, 
@@ -44,7 +48,12 @@ namespace VulTerGen
 		renderPass = new RenderPass(device, swapchain);
 
 		//From Memory
-		Memory->CreateVertexBuffer();
+		const float positions[] = { -0.5f, -0.5f,  0.5f,
+									-0.5f,  0.5f,  0.5f,
+									 0.5f, -0.5f,  0.5f,
+									 0.5f,  0.5f,  0.5f };
+		CreateVertexBuffer(positions, sizeof(positions), device, swapchain);
+
 		swapchain->CreateFramebuffer(renderPass->renderPass);
 		pipeline = new Pipeline(device, swapchain, renderPass);
 		command = new Command(device, swapchain, pipeline, renderPass);
@@ -57,7 +66,8 @@ namespace VulTerGen
 		swapchain->DestroyFramebuffer();
 
 		//From Memory
-		Memory->DestroyVertexBuffer();
+		DestroyVertexBuffer(device);
+
 		delete renderPass;
 		delete swapchain;
 		delete device;
@@ -110,8 +120,7 @@ namespace VulTerGen
 		//	vkUnmapMemory(device->logicalDevice, pipeline->uniformBuffersMemory[i]);
 		//}
 		
-		
-		color[0] = glm::abs(glm::sin(time * 4));
+		color[0] = glm::abs(glm::sin(time));
 
 		command->RecordCommandBuffer(vertexBuffer, color, time);
 		

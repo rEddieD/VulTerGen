@@ -6,8 +6,11 @@ namespace VulTerGen
 	__declspec(dllimport) void Loop();
 }
 
+bool ApplicationWindow::fullscreen = false;
+
 ApplicationWindow::ApplicationWindow(HINSTANCE hInstance)
 {
+	fullscreen = false;
 	ConsoleWindowEnabled = false;
 	this->hInstance = hInstance;
 	windowWidth = 1920;
@@ -97,7 +100,6 @@ HWND ApplicationWindow::RegisterWindowClass(HINSTANCE hInstance, const WNDPROC& 
 }
 
 
-
 LRESULT CALLBACK ApplicationWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	void (*myPtr)() = &VulTerGen::Loop;
@@ -112,6 +114,19 @@ LRESULT CALLBACK ApplicationWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		break;
 	case WM_PAINT:
 		FpsCounter(myPtr, hWnd);
+		break;
+	case WM_SYSCOMMAND:
+		if (SC_KEYMENU == (wParam & 0xFFF0))
+		{
+			if (fullscreen)
+			{
+				ExitFullscreen(hWnd, 10, 10, 800, 600, 0, 0);
+			}
+			else
+			{
+				EnterFullscreen(hWnd);
+			}
+		}
 		break;
 	default:
 		break;
@@ -154,13 +169,13 @@ void ApplicationWindow::MessageLoop()
 	//}
 }
 
-bool ApplicationWindow::EnterFullscreen(HWND hwnd, int fullscreenWidth, int fullscreenHeight, int colourBits, int refreshRate)
+bool ApplicationWindow::EnterFullscreen(HWND hWnd)// int fullscreenWidth, int fullscreenHeight, int colourBits, int refreshRate)
 {
-	HDC windowHDC = GetDC(hwnd);
-	fullscreenWidth = GetDeviceCaps(windowHDC, DESKTOPHORZRES);
-	fullscreenHeight = GetDeviceCaps(windowHDC, DESKTOPVERTRES);
-	colourBits = GetDeviceCaps(windowHDC, BITSPIXEL);
-	refreshRate = GetDeviceCaps(windowHDC, VREFRESH);
+	HDC windowHDC = GetDC(hWnd);
+	int fullscreenWidth = GetDeviceCaps(windowHDC, DESKTOPHORZRES);
+	int fullscreenHeight = GetDeviceCaps(windowHDC, DESKTOPVERTRES);
+	int colourBits = GetDeviceCaps(windowHDC, BITSPIXEL);
+	int refreshRate = GetDeviceCaps(windowHDC, VREFRESH);
 
 	DEVMODE fullscreenSettings;
 	bool isChangeSuccessful;
@@ -176,24 +191,26 @@ bool ApplicationWindow::EnterFullscreen(HWND hwnd, int fullscreenWidth, int full
 		DM_BITSPERPEL |
 		DM_DISPLAYFREQUENCY;
 
-	SetWindowLongPtr(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-	SetWindowLongPtr(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, fullscreenWidth, fullscreenHeight, SWP_SHOWWINDOW);
+	SetWindowLongPtr(hWnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
+	SetWindowLongPtr(hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, fullscreenWidth, fullscreenHeight, SWP_SHOWWINDOW);
 	isChangeSuccessful = ChangeDisplaySettings(&fullscreenSettings, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
-	ShowWindow(hwnd, SW_MAXIMIZE);
+	ShowWindow(hWnd, SW_MAXIMIZE);
+	fullscreen = true;
 
 	return isChangeSuccessful;
 }
 
-bool ApplicationWindow::ExitFullscreen(HWND hwnd, int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY) 
+bool ApplicationWindow::ExitFullscreen(HWND hWnd, int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY) 
 {
 	bool isChangeSuccessful;
 
-	SetWindowLongPtr(hwnd, GWL_EXSTYLE, WS_EX_LEFT);
-	SetWindowLongPtr(hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+	SetWindowLongPtr(hWnd, GWL_EXSTYLE, WS_EX_LEFT);
+	SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
 	isChangeSuccessful = ChangeDisplaySettings(NULL, CDS_RESET) == DISP_CHANGE_SUCCESSFUL;
-	SetWindowPos(hwnd, HWND_NOTOPMOST, windowX, windowY, windowedWidth + windowedPaddingX, windowedHeight + windowedPaddingY, SWP_SHOWWINDOW);
-	ShowWindow(hwnd, SW_RESTORE);
+	SetWindowPos(hWnd, HWND_NOTOPMOST, windowX, windowY, windowedWidth + windowedPaddingX, windowedHeight + windowedPaddingY, SWP_SHOWWINDOW);
+	ShowWindow(hWnd, SW_RESTORE);
+	fullscreen = false;
 
 	return isChangeSuccessful;
 }

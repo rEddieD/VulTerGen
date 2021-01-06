@@ -2,6 +2,8 @@
 
 namespace VulTerGen 
 {
+	VkBuffer vertexBuffer;
+
 	uint32_t findMemoryType(Device* device, uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
@@ -42,12 +44,13 @@ namespace VulTerGen
 		vkBindBufferMemory(device->logicalDevice, buffer, bufferMemory, 0);
 	}
 
-	void CreateVertexBuffer(float positions[])
+	void CreateVertexBuffer(const float* positions, int size,Device* device, Swapchain* swapchain)
 	{
-		float positions[] = { -0.5f, -0.5f,  0.5f,
-							   -0.5f,  0.5f,  0.5f,
-								0.5f, -0.5f,  0.5f,
-								0.5f,  0.5f,  0.5f };
+		VkDeviceMemory memoryObject;
+		//float position[] = { -0.5f, -0.5f,  0.5f,
+		//					   -0.5f,  0.5f,  0.5f,
+		//						0.5f, -0.5f,  0.5f,
+		//						0.5f,  0.5f,  0.5f };
 
 		//Recreate pipeline if changing shaders
 		VkBufferCreateInfo vertexBufferCreateInfo =
@@ -55,7 +58,7 @@ namespace VulTerGen
 			vertexBufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 			vertexBufferCreateInfo.pNext = nullptr,
 			vertexBufferCreateInfo.flags = 0,
-			vertexBufferCreateInfo.size = sizeof(positions),
+			vertexBufferCreateInfo.size = size,
 			vertexBufferCreateInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 			vertexBufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
 			vertexBufferCreateInfo.queueFamilyIndexCount = 1,
@@ -74,7 +77,7 @@ namespace VulTerGen
 			memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 			memoryAllocateInfo.pNext = nullptr,
 			memoryAllocateInfo.allocationSize = memoryRequirements.size,
-			memoryAllocateInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+			memoryAllocateInfo.memoryTypeIndex = findMemoryType(device, memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
 		};
 
 		vkAllocateMemory(device->logicalDevice, &memoryAllocateInfo, nullptr, &memoryObject);
@@ -87,7 +90,7 @@ namespace VulTerGen
 		vkUnmapMemory(device->logicalDevice, memoryObject);
 	}
 
-	void DestroyVertexBuffer()
+	void DestroyVertexBuffer(Device* device)
 	{
 		vkDestroyBuffer(device->logicalDevice, vertexBuffer, nullptr);
 	}

@@ -15,8 +15,10 @@ public:
 	HWND CreateGraphicalWindow();
 	void MessageLoop();
 
-	bool EnterFullscreen(HWND hwnd, int fullscreenWidth, int fullscreenHeight, int colourBits, int refreshRate);
-	bool ExitFullscreen(HWND hwnd, int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY);
+	static bool fullscreen;
+
+	static bool EnterFullscreen(HWND hwnd);//, int fullscreenWidth, int fullscreenHeight, int colourBits, int refreshRate);
+	static bool ExitFullscreen(HWND hwnd, int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY);
 
 private:
 	bool ConsoleWindowEnabled;
@@ -32,6 +34,6 @@ private:
 
 	HWND RegisterWindowClass(HINSTANCE hInstance, const WNDPROC& windowProc);
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
+	
 	static void FpsCounter(void (*thisProc)(void), HWND wndHandle);
 };

@@ -9,6 +9,7 @@
 #include "Pipeline.h"
 #include "Command.h"
 #include "RenderPass.h"
+#include "Memory.h"
 
 namespace VulTerGen
 {
@@ -21,8 +22,6 @@ namespace VulTerGen
 		Device* device;
 		Swapchain* swapchain;
 
-		//All of the physical devices
-		//std::vector<VkPhysicalDevice> physicalDevices;
 		RenderPass* renderPass;
 		Pipeline* pipeline;
 		Command* command;
@@ -37,8 +36,6 @@ namespace VulTerGen
 
 	private:
 		std::array<float, 4> color = { 0.0f, 0.7f, 0.4f, 0.1f };
-		VkDeviceMemory memoryObject;
-		VkBuffer vertexBuffer;
 		VkFence commandBufferExecutionFinished;
 		float time;
 

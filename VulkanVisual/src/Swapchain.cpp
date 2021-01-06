@@ -94,7 +94,7 @@ namespace VulTerGen
 			swapchainCreateInfo.pQueueFamilyIndices = nullptr,
 			swapchainCreateInfo.preTransform = surfaceCapabilities.currentTransform,
 			swapchainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-			swapchainCreateInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR,
+			swapchainCreateInfo.presentMode = VK_PRESENT_MODE_MAILBOX_KHR,
 			swapchainCreateInfo.clipped = VK_TRUE,
 			swapchainCreateInfo.oldSwapchain = nullptr
 		};

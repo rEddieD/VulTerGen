@@ -13,7 +13,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,_In_opt_ HINSTANCE hPrevInstance,_In
 	w.EnableConsoleWindow();
 	HWND hWnd = w.CreateGraphicalWindow();
 
-	w.EnterFullscreen(hWnd, 1980, 1020, 24, 60);
+	w.EnterFullscreen(hWnd);
 	VulTerGen::Start(hWnd);
 	w.MessageLoop();
 	VulTerGen::Stop();
